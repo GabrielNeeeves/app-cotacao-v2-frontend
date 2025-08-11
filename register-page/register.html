@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Cliente</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+
+    <!-- Container principal do formulário -->
+    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl max-w-lg w-full">
+        <h2 class="text-2xl font-bold mb-6 text-center">Registrar Cliente</h2>
+        <form id="registration-form" class="space-y-4">
+            <!-- Campo Nome -->
+            <div>
+                <label for="nome" class="block text-sm font-medium text-gray-400">Nome</label>
+                <input type="text" id="nome" name="nome" placeholder="Seu Nome" required
+                       class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+            </div>
+
+            <!-- Campo Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-400">Email</label>
+                <input type="email" id="email" name="email" placeholder="Seu Email" required
+                       class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+            </div>
+
+            <!-- Campo Senha -->
+            <div>
+                <label for="senha" class="block text-sm font-medium text-gray-400">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Sua Senha" required
+                       class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+            </div>
+
+            <!-- Campo Aluno ID (Opcional) -->
+            <div>
+                <label for="alunoId" class="block text-sm font-medium text-gray-400">ID do Aluno (Opcional)</label>
+                <input type="text" id="alunoId" name="alunoId" placeholder="ID do Aluno"
+                       class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+            </div>
+
+            <!-- Área para mensagens de status -->
+            <div id="status-message" class="hidden p-3 rounded-md text-center text-sm"></div>
+
+            <!-- Botão de submissão -->
+            <div>
+                <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out">
+                    Registrar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registration-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            const statusMessage = document.getElementById('status-message');
+            statusMessage.classList.add('hidden');
+
+            const form = event.target;
+            const nome = form.nome.value;
+            const email = form.email.value;
+            const senha = form.senha.value;
+            const alunoId = form.alunoId.value;
+
+            // Cria o objeto de dados a ser enviado
+            const data = {
+                nome: nome,
+                email: email,
+                senha: senha,
+                alunoId: alunoId || null // Envia null se o campo estiver vazio
+            };
+
+            const url = 'http://localhost:8080/auth/register/cliente';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    statusMessage.textContent = 'Cliente registrado com sucesso!';
+                    statusMessage.className = 'block p-3 rounded-md text-center text-green-200 bg-green-800';
+                    form.reset(); // Limpa o formulário
+                } else if (response.status === 400) {
+                    statusMessage.textContent = 'Erro: Email já cadastrado.';
+                    statusMessage.className = 'block p-3 rounded-md text-center text-red-200 bg-red-800';
+                } else {
+                    statusMessage.textContent = 'Erro ao registrar. Por favor, tente novamente.';
+                    statusMessage.className = 'block p-3 rounded-md text-center text-red-200 bg-red-800';
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                statusMessage.textContent = 'Não foi possível conectar ao servidor. Verifique a URL e a API.';
+                statusMessage.className = 'block p-3 rounded-md text-center text-red-200 bg-red-800';
+            }
+        });
+    </script>
+</body>
+</html>
