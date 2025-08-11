@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <!-- Inclui o CDN do Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Fundo escuro */
+            color: #d1d5db; /* Cor do texto padrão */
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-gray-100">SchoolSuppliesCompare</a>
+            <div class="flex space-x-6">
+                <a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Main Page</a>
+                <a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Item Details</a>
+                <a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Price Comparison</a>
+                <a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">About Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <main class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold text-center text-gray-100 mb-8">Bem-vindo(a)</h1>
+
+        <!-- Carrossel de Imagens -->
+        <div class="relative w-full max-w-4xl mx-auto overflow-hidden rounded-lg shadow-xl">
+            <div id="carousel-container" class="flex transition-transform duration-500 ease-in-out">
+                <div class="w-full flex-shrink-0">
+                    <img src="../static/img/pexels-frans-van-heerden-201846-632470(1).jpg" onerror="this.src='https://placehold.co/900x600/1f2937/d1d5db?text=Image+Unavailable'" alt="Materiais de escritório" class="w-full h-auto rounded-lg">
+                </div>
+                <div class="w-full flex-shrink-0">
+                    <img src="../static/img/pexels-pixabay-159644.jpg" onerror="this.src='https://placehold.co/900x600/1f2937/d1d5db?text=Image+Unavailable'" alt="Materiais de arte em potes" class="w-full h-auto rounded-lg">
+                </div>
+                <div class="w-full flex-shrink-0">
+                    <img src="../static/img/pexels-pixabay-159497.jpg" onerror="this.src='https://placehold.co/900x600/1f2937/d1d5db?text=Image+Unavailable'" alt="Caderno e canetas" class="w-full h-auto rounded-lg">
+                </div>
+            </div>
+
+            <!-- Botões de navegação do carrossel -->
+            <button id="prevBtn" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition duration-300 focus:outline-none">
+                &#10094;
+            </button>
+            <button id="nextBtn" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition duration-300 focus:outline-none">
+                &#10095;
+            </button>
+        </div>
+    </main>
+
+    <script>
+        const carouselContainer = document.getElementById('carousel-container');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const images = carouselContainer.querySelectorAll('img');
+        let currentIndex = 0;
+
+        function updateCarousel() {
+            carouselContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateCarousel();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateCarousel();
+        });
+
+        // Opcional: Auto-play do carrossel
+        // setInterval(() => {
+        //     nextBtn.click();
+        // }, 5000);
+    </script>
+</body>
+</html>

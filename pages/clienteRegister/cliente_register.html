@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registrar Cliente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center">
+
+  <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md text-white">
+    <h2 class="text-xl mb-6 font-semibold">Registrar Cliente</h2>
+
+    <form id="registerForm" class="space-y-4">
+      <div>
+        <label for="nome" class="block mb-1">Nome</label>
+        <input
+          id="nome"
+          name="nome"
+          type="text"
+          placeholder="Seu Nome"
+          required
+          class="w-full rounded-md bg-gray-900 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+        />
+      </div>
+
+      <div>
+        <label for="email" class="block mb-1">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Seu Email"
+          required
+          class="w-full rounded-md bg-gray-900 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+        />
+      </div>
+
+      <div>
+        <label for="senha" class="block mb-1">Senha</label>
+        <input
+          id="senha"
+          name="senha"
+          type="password"
+          placeholder="Sua Senha"
+          required
+          class="w-full rounded-md bg-gray-900 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+        />
+      </div>
+
+      <div>
+        <label for="alunoId" class="block mb-1">Aluno ID (opcional)</label>
+        <input
+          id="alunoId"
+          name="alunoId"
+          type="number"
+          placeholder="ID do Aluno"
+          class="w-full rounded-md bg-gray-900 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="w-full bg-purple-700 hover:bg-purple-800 rounded-md py-2 mt-4 font-semibold transition-colors"
+      >
+        Registrar
+      </button>
+    </form>
+
+    <p id="responseMessage" class="mt-4 text-center"></p>
+  </div>
+
+  <script src="script_cliente_register.js"></script>
+
+</body>
+</html>

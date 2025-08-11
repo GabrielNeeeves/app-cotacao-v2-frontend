@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Login</title>
+    <!-- Inclui o CDN do Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300 flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-md bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700">
+        <h2 class="text-3xl font-bold mb-6 text-center text-gray-100">Entrar</h2>
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-400">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Seu email"
+                       class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-gray-200 transition duration-150 ease-in-out">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-400">Senha</label>
+                <input type="password" id="password" name="password" required placeholder="Sua senha"
+                       class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-gray-200 transition duration-150 ease-in-out">
+            </div>
+            <div>
+                <button type="submit"
+                        class="w-full py-3 px-4 rounded-md text-white font-semibold shadow-lg transition duration-300 ease-in-out bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 focus:ring-offset-gray-800">
+                    Login
+                </button>
+            </div>
+        </form>
+
+        <!-- Pop-up de erro com animação -->
+        <div id="errorPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
+            <div id="popupContent" class="bg-gray-800 p-6 rounded-lg shadow-2xl border border-gray-700 text-center max-w-sm w-full transform scale-95 transition-all duration-300 ease-in-out">
+                <h3 class="text-xl font-bold text-red-400 mb-2">Erro de Login</h3>
+                <p class="text-gray-300 mb-4">Email ou senha incorretos. Por favor, tente novamente.</p>
+                <button id="closePopup" class="w-full py-2 px-4 rounded-md text-white font-semibold bg-red-600 hover:bg-red-700 transition duration-150 ease-in-out">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="login_script.js"></script>
+</body>
+</html>
