@@ -99,6 +99,38 @@
         </div>
     </div>
 
+<!-- Added modal for displaying material details -->
+    <!-- Modal -->
+    <div id="detailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-gray-700">
+                <h3 id="modalTitle" class="text-xl font-semibold text-white">School Supply Details</h3>
+                <button id="closeModal" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <!-- School Info -->
+                <div id="modalSchoolInfo" class="mb-6 p-4 bg-gray-700 rounded-lg">
+                    <!-- School information will be populated here -->
+                </div>
+                
+                <!-- Materials List -->
+                <div>
+                    <h4 class="text-lg font-semibold text-purple-400 mb-4">Materials List</h4>
+                    <div id="modalMaterialsList" class="space-y-3">
+                        <!-- Materials will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="../../js/buscarMateriais.js"></script>
 </body>
 </html>
