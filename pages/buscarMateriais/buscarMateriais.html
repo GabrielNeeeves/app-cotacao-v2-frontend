@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Supplies Search - SchoolSuppliesCompare</title>
+    <title>App cotação - Buscar lista</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -29,17 +29,13 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold text-purple-400">🏠 SchoolSuppliesCompare</h1>
+                        <h1 class="text-xl font-bold text-purple-400">App cotação</h1>
                     </div>
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="../index/index.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Main Page</a>
-                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Item Details</a>
-                        <a href="../createList/create-list.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Criar Lista Padrão</a>
-                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Price Comparison</a>
-                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About Us</a>
-                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                        <a href="../index/index.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Página principal</a>
+                        <a href="../createList/create-list.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Criar lista padrão</a>
                     </div>
                 </div>
             </div>
@@ -50,26 +46,26 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Page Title -->
         <div class="mb-8">
-            <h2 class="text-3xl font-bold text-purple-400 mb-2">School Supplies Search</h2>
-            <p class="text-gray-400">Search for school supply lists by school name</p>
+            <h2 class="text-3xl font-bold text-purple-400 mb-2">App cotação</h2>
+            <p class="text-gray-400">Buscar lista pelo nome da escola</p>
         </div>
 
         <!-- Search Section -->
         <div class="mb-8">
             <div class="max-w-md">
-                <label for="schoolSearch" class="block text-sm font-medium text-gray-300 mb-2">School Name</label>
+                <label for="schoolSearch" class="block text-sm font-medium text-gray-300 mb-2">Nome da escola</label>
                 <div class="flex gap-3">
                     <input 
                         type="text" 
                         id="schoolSearch" 
-                        placeholder="Enter school name..."
+                        placeholder="Digite o nome da escola..."
                         class="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     >
                     <button 
                         id="searchBtn"
                         class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
                     >
-                        Search
+                        Buscar
                     </button>
                 </div>
             </div>
@@ -88,7 +84,7 @@
 
         <!-- Results Section -->
         <div id="resultsSection" class="hidden">
-            <h3 class="text-xl font-semibold text-white mb-4">Search Results</h3>
+            <h3 class="text-xl font-semibold text-white mb-4">Resultados de busca</h3>
             <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Results will be populated here -->
             </div>
@@ -96,7 +92,7 @@
 
         <!-- No Results -->
         <div id="noResults" class="hidden text-center py-8">
-            <p class="text-gray-400 text-lg">No school supply lists found for this search.</p>
+            <p class="text-gray-400 text-lg">Nenhuma lista de materiais encontrada para esta busca.</p>
         </div>
     </div>
 
@@ -106,7 +102,7 @@
         <div class="bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
             <!-- Modal Header -->
             <div class="flex justify-between items-center p-6 border-b border-gray-700">
-                <h3 id="modalTitle" class="text-xl font-semibold text-white">School Supply Details</h3>
+                <h3 id="modalTitle" class="text-xl font-semibold text-white">Detalhes do Material Escolar</h3>
                 <button id="closeModal" class="text-gray-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -123,7 +119,7 @@
                 
                 <!-- Materials List -->
                 <div>
-                    <h4 class="text-lg font-semibold text-purple-400 mb-4">Materials List</h4>
+                    <h4 class="text-lg font-semibold text-purple-400 mb-4">Lista de Materiais</h4>
                     <div id="modalMaterialsList" class="space-y-3">
                         <!-- Materials will be populated here -->
                     </div>

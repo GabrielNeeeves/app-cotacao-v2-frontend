@@ -154,14 +154,14 @@ class SchoolSuppliesSearch {
             <div class="mb-4">
                 <h4 class="text-lg font-semibold text-white mb-2">${item.escolaNome || "Unknown School"}</h4>
                 <div class="space-y-1 text-sm text-gray-300">
-                    <p><span class="text-purple-400">Year:</span> ${item.anoLetivo || "N/A"}</p>
-                    <p><span class="text-purple-400">Grade:</span> ${item.serie || "N/A"}</p>
+                    <p><span class="text-purple-400">Ano:</span> ${item.anoLetivo || "N/A"}</p>
+                    <p><span class="text-purple-400">Série:</span> ${item.serie || "N/A"}</p>
                     <p><span class="text-purple-400">Material:</span> ${materialInfo}</p>
-                    <p><span class="text-purple-400">List ID:</span> ${item.listaId || "N/A"}</p>
+                    <p><span class="text-purple-400">ID da Lista:</span> ${item.listaId || "N/A"}</p>
                 </div>
             </div>
             <button class="view-details-btn w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-800">
-                View Details
+                Ver Detalhes
             </button>
         `
 
@@ -172,25 +172,25 @@ class SchoolSuppliesSearch {
   }
 
   openModal(item) {
-    this.modalTitle.textContent = `${item.escolaNome || "Unknown School"} - Supply List Details`
+    this.modalTitle.textContent = `${item.escolaNome || "Escola desconhecida"} - Detalhes da Lista de Materiais`
 
     // Populate school info
     this.modalSchoolInfo.innerHTML = `
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <p class="text-sm text-gray-400">School Name</p>
+          <p class="text-sm text-gray-400">Nome da Escola</p>
           <p class="text-white font-medium">${item.escolaNome || "N/A"}</p>
         </div>
         <div>
-          <p class="text-sm text-gray-400">Academic Year</p>
+          <p class="text-sm text-gray-400">Ano Letivo</p>
           <p class="text-white font-medium">${item.anoLetivo || "N/A"}</p>
         </div>
         <div>
-          <p class="text-sm text-gray-400">Grade</p>
+          <p class="text-sm text-gray-400">Série</p>
           <p class="text-white font-medium">${item.serie || "N/A"}</p>
         </div>
         <div>
-          <p class="text-sm text-gray-400">List ID</p>
+          <p class="text-sm text-gray-400">ID da Lista</p>
           <p class="text-white font-medium">${item.listaId || "N/A"}</p>
         </div>
       </div>
@@ -244,7 +244,7 @@ class SchoolSuppliesSearch {
         materialCard.innerHTML = `
           <div class="flex justify-between items-start mb-3">
             <h5 class="font-medium text-white text-lg">${material.nome || `Material ${index + 1}`}</h5>
-            ${material.quantidade ? `<span class="text-sm bg-purple-600 text-white px-3 py-1 rounded-full font-medium">Qty: ${material.quantidade}</span>` : ""}
+            ${material.quantidade ? `<span class="text-sm bg-purple-600 text-white px-3 py-1 rounded-full font-medium">Quantidade: ${material.quantidade}</span>` : ""}
           </div>
           ${
             material.observacoes

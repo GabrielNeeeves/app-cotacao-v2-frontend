@@ -13,13 +13,12 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold text-purple-400">📚 SchoolSuppliesCompare</h1>
+                        <h1 class="text-xl font-bold text-purple-400">App cotação</h1>
                     </div>
                 </div>
                 <div class="flex space-x-4">
+                    <a href="../index/index.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Página principal</a>
                     <a href="../buscarMateriais/buscarMateriais.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Buscar materiais</a>
-                    <a href="../pages/index/index.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Main Page</a>
-                    <button id="logoutBtn" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Logout</button>
                 </div>
             </div>
         </div>
@@ -28,12 +27,12 @@
     <!-- Main Content -->
     <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div class="bg-gray-800 rounded-lg shadow-xl p-6">
-            <h2 class="text-2xl font-bold text-purple-400 mb-6">Create New Material List</h2>
+            <h2 class="text-2xl font-bold text-purple-400 mb-6">Criar nova lista padrão</h2>
             
             <!-- Access Denied Message (hidden by default) -->
             <div id="accessDenied" class="hidden bg-red-600 text-white p-4 rounded-lg mb-6">
-                <h3 class="font-bold">Access Denied</h3>
-                <p>Only FUNCIONARIO users can create material lists.</p>
+                <h3 class="font-bold">Acesso negado</h3>
+                <p>Apenas FUNCIONARIOS podem criar listas.</p>
             </div>
 
             <!-- Form -->
@@ -41,22 +40,22 @@
                 <!-- Basic Information -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="funcionarioId" class="block text-sm font-medium text-gray-300 mb-2">Employee ID</label>
+                        <label for="funcionarioId" class="block text-sm font-medium text-gray-300 mb-2">ID do funcionário</label>
                         <input type="number" id="funcionarioId" name="funcionarioId" required
                                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                     </div>
                     <div>
-                        <label for="escolaId" class="block text-sm font-medium text-gray-300 mb-2">School ID</label>
+                        <label for="escolaId" class="block text-sm font-medium text-gray-300 mb-2">ID da escola</label>
                         <input type="number" id="escolaId" name="escolaId" required
                                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                     </div>
                     <div>
-                        <label for="anoLetivo" class="block text-sm font-medium text-gray-300 mb-2">Academic Year</label>
+                        <label for="anoLetivo" class="block text-sm font-medium text-gray-300 mb-2">Ano Letivo</label>
                         <input type="number" id="anoLetivo" name="anoLetivo" required min="2020" max="2030"
                                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                     </div>
                     <div>
-                        <label for="serie" class="block text-sm font-medium text-gray-300 mb-2">Grade/Class</label>
+                        <label for="serie" class="block text-sm font-medium text-gray-300 mb-2">Ano/Série</label>
                         <input type="text" id="serie" name="serie" required placeholder="e.g., 9°C"
                                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                     </div>
@@ -65,7 +64,7 @@
                 <!-- Materials Section -->
                 <div>
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-purple-400">Materials</h3>
+                        <h3 class="text-lg font-semibold text-purple-400">Materiais</h3>
                         <button type="button" id="addMaterialBtn" 
                                 class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
                             Add Material
@@ -81,11 +80,11 @@
                 <div class="flex justify-end space-x-4">
                     <button type="button" id="cancelBtn" 
                             class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-md font-medium transition-colors">
-                        Cancel
+                        Cancelar
                     </button>
                     <button type="submit" id="submitBtn"
                             class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-md font-medium transition-colors">
-                        Create List
+                        Criar lista
                     </button>
                 </div>
             </form>
@@ -93,19 +92,19 @@
             <!-- Loading State -->
             <div id="loadingState" class="hidden text-center py-8">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400"></div>
-                <p class="mt-2 text-gray-400">Creating material list...</p>
+                <p class="mt-2 text-gray-400">Criando lista...</p>
             </div>
 
             <!-- Success Message -->
             <div id="successMessage" class="hidden bg-green-600 text-white p-4 rounded-lg">
                 <h3 class="font-bold">Success!</h3>
-                <p>Material list created successfully.</p>
+                <p>Lista de materiais criada.</p>
             </div>
 
             <!-- Error Message -->
             <div id="errorMessage" class="hidden bg-red-600 text-white p-4 rounded-lg">
                 <h3 class="font-bold">Error</h3>
-                <p id="errorText">Failed to create material list.</p>
+                <p id="errorText">Falha ao criar lista de materiais.</p>
             </div>
         </div>
     </div>
