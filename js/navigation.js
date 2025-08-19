@@ -18,8 +18,10 @@ class NavigationManager {
 
   // Initialize navigation
   initialize(authService) {
-    // Check authentication status on page load
-    this.checkAuthenticationStatus(authService)
+    // Check authentication status on page load only for login page
+    if (window.location.pathname.includes("login.html") || window.location.pathname.endsWith("/")) {
+      this.checkAuthenticationStatus(authService)
+    }
   }
 }
 
