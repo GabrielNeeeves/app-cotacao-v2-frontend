@@ -4,6 +4,52 @@ class AuthService {
     this.apiUrl = "http://localhost:8080/auth/login"
   }
 
+  decodeJWT(token) {
+    try {
+      console.log("[v0] Attempting to decode JWT token")
+      const base64Url = token.split(".")[1]
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/")
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(""),
+      )
+      const decoded = JSON.parse(jsonPayload)
+      console.log("[v0] JWT decoded successfully:", decoded)
+      return decoded
+    } catch (error) {
+      console.error("[v0] Error decoding JWT:", error)
+      return null
+    }
+  }
+
+  getUserRoles() {
+    const token = this.getToken()
+    console.log("[v0] Getting user roles, token exists:", !!token)
+    if (!token) return []
+
+    const decoded = this.decodeJWT(token)
+    if (!decoded) return []
+
+    const authorities = decoded.authorities || decoded.roles || decoded.auth || []
+    console.log("[v0] Extracted authorities from JWT:", authorities)
+    return authorities
+  }
+
+  hasRole(roleName) {
+    const roles = this.getUserRoles()
+    const hasRole = roles.includes(roleName)
+    console.log("[v0] Checking for role:", roleName, "User roles:", roles, "Has role:", hasRole)
+    return hasRole
+  }
+
+  isFuncionario() {
+    const result = this.hasRole("ROLE_FUNCIONARIO")
+    console.log("[v0] isFuncionario check result:", result)
+    return result
+  }
+
   // Store token in localStorage
   storeToken(token) {
     localStorage.setItem("bearerToken", token)
@@ -21,7 +67,8 @@ class AuthService {
 
   // Get stored user role
   getUserRole() {
-    return localStorage.getItem("userRole")
+    const roles = this.getUserRoles()
+    return roles.length > 0 ? roles[0] : null // Return first role or null
   }
 
   // Check if user is authenticated
