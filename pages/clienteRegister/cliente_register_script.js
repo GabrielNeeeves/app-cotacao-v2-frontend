@@ -1,33 +1,58 @@
-const form = document.getElementById("registerForm");
-    const responseMessage = document.getElementById("responseMessage");
+// Toggle between login and registration forms
+document.getElementById('createAccountButton').addEventListener('click', function() {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('registerForm').classList.remove('hidden');
+    document.querySelector('h2').textContent = 'Criar Nova Conta';
+    document.querySelector('p').textContent = 'Registrar-se como cliente';
+});
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+document.getElementById('backToLoginButton').addEventListener('click', function() {
+    document.getElementById('registerForm').classList.add('hidden');
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.querySelector('h2').textContent = 'Entrar com sua conta';
+    document.querySelector('p').textContent = 'Fazer login';
+});
 
-      const data = {
-        nome: form.nome.value.trim(),
-        email: form.email.value.trim(),
-        senha: form.senha.value,
-        alunoId: form.alunoId.value ? Number(form.alunoId.value) : null,
-      };
+// Handle registration form submission
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const registerData = {
+        nome: formData.get('nome'),
+        email: formData.get('email'),
+        senha: formData.get('senha'),
+        alunoId: null
+    };
 
-      try {
-        const response = await fetch("http://localhost:8080/auth/register/cliente", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+    const submitButton = document.getElementById('registerSubmitButton');
+    const originalText = submitButton.textContent;
+    
+    try {
+        submitButton.textContent = 'Registrando...';
+        submitButton.disabled = true;
+
+        const response = await fetch('http://localhost:8080/auth/register/cliente', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(registerData)
         });
 
         if (response.ok) {
-          responseMessage.textContent = "Cliente registrado com sucesso!";
-          responseMessage.className = "mt-4 text-center text-green-500";
-          form.reset();
+            alert('Conta criada com sucesso! Faça login com suas credenciais.');
+            document.getElementById('backToLoginButton').click();
+            document.getElementById('registerForm').reset();
         } else {
-          responseMessage.textContent = "Erro ao registrar cliente. Email já cadastrado?";
-          responseMessage.className = "mt-4 text-center text-red-500";
+            const errorData = await response.text();
+            alert('Erro ao criar conta: ' + errorData);
         }
-      } catch (err) {
-        responseMessage.textContent = "Erro na conexão com o servidor.";
-        responseMessage.className = "mt-4 text-center text-red-500";
-      }
-    });
+    } catch (error) {
+        console.error('Registration error:', error);
+        alert('Erro de conexão. Tente novamente.');
+    } finally {
+        submitButton.textContent = originalText;
+        submitButton.disabled = false;
+    }
+});
