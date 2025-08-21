@@ -51,6 +51,9 @@
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
                     Entrar com sua conta
                 </h2>
+                <p class="mt-2 text-center text-sm text-gray-400">
+                    Fazer login
+                </p>
             </div>
             
             <!-- Login Form -->
@@ -103,12 +106,81 @@
                         Logar
                     </button>
                 </div>
+
+                <!-- Added create account button -->
+                <div class="mt-4">
+                    <button 
+                        type="button" 
+                        id="createAccountButton"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-gray-600 text-sm font-medium rounded-md text-gray-300 bg-transparent hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+                    >
+                        Criar Conta
+                    </button>
+                </div>
+            </form>
+
+            <!-- Added registration form (initially hidden) -->
+            <form class="mt-8 space-y-6 hidden" id="registerForm">
+                <div class="rounded-md shadow-sm space-y-4">
+                    <div>
+                        <label for="registerName" class="block text-sm font-medium text-gray-300 mb-2">
+                            Nome
+                        </label>
+                        <input 
+                            id="registerName" 
+                            name="nome" 
+                            type="text" 
+                            required 
+                            class="appearance-none relative block w-full px-3 py-2 border border-gray-600 placeholder-gray-400 text-white bg-gray-700 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" 
+                            placeholder="Digite seu nome"
+                        >
+                    </div>
+                    <div>
+                        <label for="registerEmail" class="block text-sm font-medium text-gray-300 mb-2">
+                            Email
+                        </label>
+                        <input 
+                            id="registerEmail" 
+                            name="email" 
+                            type="email" 
+                            required 
+                            class="appearance-none relative block w-full px-3 py-2 border border-gray-600 placeholder-gray-400 text-white bg-gray-700 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" 
+                            placeholder="Digite seu email"
+                        >
+                    </div>
+                    <div>
+                        <label for="registerPassword" class="block text-sm font-medium text-gray-300 mb-2">
+                            Senha
+                        </label>
+                        <input 
+                            id="registerPassword" 
+                            name="senha" 
+                            type="password" 
+                            required 
+                            class="appearance-none relative block w-full px-3 py-2 border border-gray-600 placeholder-gray-400 text-white bg-gray-700 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" 
+                            placeholder="Digite sua senha"
+                        >
+                    </div>
+                </div>
+
                 <div>
-                    <a
-                        href="../clienteRegister/cliente_register.html"
-                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
-                        Criar uma nova conta
-                    </a>
+                    <button 
+                        type="submit" 
+                        id="registerSubmitButton"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+                    >
+                        Registrar
+                    </button>
+                </div>
+
+                <div class="mt-4">
+                    <button 
+                        type="button" 
+                        id="backToLoginButton"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-gray-600 text-sm font-medium rounded-md text-gray-300 bg-transparent hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+                    >
+                        Voltar ao Login
+                    </button>
                 </div>
             </form>
         </div>
@@ -119,5 +191,67 @@
     <script src="../../js/ui.js"></script>
     <script src="../../js/navigation.js"></script>
     <script src="../../js/auth.js"></script>
+
+    <!-- Added registration functionality script -->
+    <script>
+        // Toggle between login and registration forms
+        document.getElementById('createAccountButton').addEventListener('click', function() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.querySelector('h2').textContent = 'Criar Nova Conta';
+            document.querySelector('p').textContent = 'Registrar-se como cliente';
+        });
+
+        document.getElementById('backToLoginButton').addEventListener('click', function() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.querySelector('h2').textContent = 'Entrar com sua conta';
+            document.querySelector('p').textContent = 'Fazer login';
+        });
+
+        // Handle registration form submission
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const registerData = {
+                nome: formData.get('nome'),
+                email: formData.get('email'),
+                senha: formData.get('senha'),
+                alunoId: null
+            };
+
+            const submitButton = document.getElementById('registerSubmitButton');
+            const originalText = submitButton.textContent;
+            
+            try {
+                submitButton.textContent = 'Registrando...';
+                submitButton.disabled = true;
+
+                const response = await fetch('http://localhost:8080/auth/register/cliente', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(registerData)
+                });
+
+                if (response.ok) {
+                    alert('Conta criada com sucesso! Faça login com suas credenciais.');
+                    document.getElementById('backToLoginButton').click();
+                    document.getElementById('registerForm').reset();
+                } else {
+                    const errorData = await response.text();
+                    alert('Erro ao criar conta: ' + errorData);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Erro de conexão. Tente novamente.');
+            } finally {
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
