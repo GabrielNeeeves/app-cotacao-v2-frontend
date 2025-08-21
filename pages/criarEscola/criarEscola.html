@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Escola - App cotação</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <nav class="bg-gray-800 p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-gray-100">App cotação</a>
+            <div class="flex space-x-6">
+                <a href="index.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Página principal</a>
+                <a href="index.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Buscar materiais</a>
+                <a href="../createList/create-list.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Criar lista padrão</a>
+                <a href="../criarEscola/criarEscola.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Cadastrar escola</a>
+                <a href="../login/login.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Login</a>
+                <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-8">
+        <div class="max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-xl p-8">
+            <h1 class="text-3xl font-bold text-center text-purple-400 mb-8">Criar Nova Escola</h1>
+            
+            <div class="bg-red-600 text-white p-3 rounded-md mb-6 hidden" id="errorMessage"></div>
+            <div class="bg-green-600 text-white p-3 rounded-md mb-6 hidden" id="successMessage"></div>
+
+            <form id="escolaForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="md:col-span-2">
+                        <label for="nome" class="block text-sm font-medium text-gray-300 mb-2">Nome da Escola</label>
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            name="nome" 
+                            placeholder="Ex: Escola Estadual João Silva"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="endereco" class="block text-sm font-medium text-gray-300 mb-2">Endereço</label>
+                        <input 
+                            type="text" 
+                            id="endereco" 
+                            name="endereco" 
+                            placeholder="Ex: Rua das Flores, 123, Centro"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="tipoEscola" class="block text-sm font-medium text-gray-300 mb-2">Tipo de Escola</label>
+                        <select id="tipoEscola" name="tipoEscola" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="PUBLICA">Pública</option>
+                            <option value="PRIVADA">Privada</option>
+                            <option value="MUNICIPAL">Municipal</option>
+                            <option value="ESTADUAL">Estadual</option>
+                            <option value="FEDERAL">Federal</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="telefone" class="block text-sm font-medium text-gray-300 mb-2">Telefone</label>
+                        <input 
+                            type="tel" 
+                            id="telefone" 
+                            name="telefone" 
+                            placeholder="(17) 3444-4332"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="cnpj" class="block text-sm font-medium text-gray-300 mb-2">CNPJ</label>
+                        <input 
+                            type="text" 
+                            id="cnpj" 
+                            name="cnpj" 
+                            placeholder="82.649.740/0001-18"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <button type="button" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-md font-medium transition-colors duration-200" onclick="cancelForm()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-md font-medium transition-colors duration-200 disabled:bg-gray-500 disabled:cursor-not-allowed" id="submitBtn">
+                        <span class="btn-text">Criar Escola</span>
+                        <div class="loading hidden items-center space-x-2" id="loadingSpinner">
+                            <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <span>Criando...</span>
+                        </div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function formatCNPJ(value) {
+            return value
+                .replace(/\D/g, '')
+                .replace(/^(\d{2})(\d)/, '$1.$2')
+                .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                .replace(/\.(\d{3})(\d)/, '.$1/$2')
+                .replace(/(\d{4})(\d)/, '$1-$2')
+                .substring(0, 18);
+        }
+
+        function formatPhone(value) {
+            return value
+                .replace(/\D/g, '')
+                .replace(/^(\d{2})(\d)/, '($1) $2')
+                .replace(/(\d{4})(\d)/, '$1-$2')
+                .substring(0, 15);
+        }
+
+        document.getElementById('cnpj').addEventListener('input', function(e) {
+            e.target.value = formatCNPJ(e.target.value);
+        });
+
+        document.getElementById('telefone').addEventListener('input', function(e) {
+            e.target.value = formatPhone(e.target.value);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Tem certeza que deseja sair?')) {
+                        localStorage.removeItem('bearerToken');
+                        localStorage.removeItem('userRole');
+                        window.location.href = '../login/login.html';
+                    }
+                });
+            }
+        });
+
+        document.getElementById('escolaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            errorMessage.classList.add('hidden');
+            successMessage.classList.add('hidden');
+            
+            btnText.style.display = 'none';
+            loadingSpinner.classList.remove('hidden');
+            loadingSpinner.classList.add('flex');
+            submitBtn.disabled = true;
+            
+            try {
+                const formData = new FormData(e.target);
+                const escolaData = {
+                    nome: formData.get('nome'),
+                    endereco: formData.get('endereco'),
+                    tipoEscola: formData.get('tipoEscola'),
+                    cnpj: formData.get('cnpj'),
+                    telefone: formData.get('telefone')
+                };
+
+                console.log('[v0] Sending escola data:', escolaData);
+
+                const response = await fetch('http://localhost:8080/escolas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('bearerToken')}`
+                    },
+                    body: JSON.stringify(escolaData)
+                });
+
+                console.log('[v0] Response status:', response.status);
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('[v0] Escola created successfully:', result);
+                    
+                    successMessage.textContent = 'Escola criada com sucesso!';
+                    successMessage.classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        e.target.reset();
+                        successMessage.classList.add('hidden');
+                    }, 3000);
+                } else {
+                    const errorData = await response.text();
+                    console.error('[v0] Error creating escola:', errorData);
+                    
+                    errorMessage.textContent = `Você não tem permissão para realizar essa ação: ${response.status} - ${errorData}`;
+                    errorMessage.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('[v0] Network error:', error);
+                errorMessage.textContent = 'Erro de conexão. Verifique sua internet e tente novamente.';
+                errorMessage.classList.remove('hidden');
+            } finally {
+                btnText.style.display = 'inline';
+                loadingSpinner.classList.add('hidden');
+                loadingSpinner.classList.remove('flex');
+                submitBtn.disabled = false;
+            }
+        });
+
+        function cancelForm() {
+            if (confirm('Tem certeza que deseja cancelar? Todos os dados serão perdidos.')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function validateForm() {
+            const nome = document.getElementById('nome').value.trim();
+            const endereco = document.getElementById('endereco').value.trim();
+            const tipoEscola = document.getElementById('tipoEscola').value;
+            const cnpj = document.getElementById('cnpj').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+
+            if (!nome || !endereco || !tipoEscola || !cnpj || !telefone) {
+                return false;
+            }
+
+            const cnpjNumbers = cnpj.replace(/\D/g, '');
+            if (cnpjNumbers.length !== 14) {
+                return false;
+            }
+
+            const phoneNumbers = telefone.replace(/\D/g, '');
+            if (phoneNumbers.length < 10 || phoneNumbers.length > 11) {
+                return false;
+            }
+
+            return true;
+        }
+
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', function() {
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = !validateForm();
+            });
+        });
+    </script>
+</body>
+</html>
