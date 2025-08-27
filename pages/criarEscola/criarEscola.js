@@ -52,7 +52,7 @@ function formatCNPJ(value) {
                     telefone: formData.get('telefone')
                 };
 
-                console.log('[v0] Sending escola data:', escolaData);
+                console.log('Sending escola data:', escolaData);
 
                 const response = await fetch('http://localhost:8080/escolas', {
                     method: 'POST',
@@ -63,7 +63,7 @@ function formatCNPJ(value) {
                     body: JSON.stringify(escolaData)
                 });
 
-                console.log('[v0] Response status:', response.status);
+                console.log('Response status:', response.status);
 
                 if (response.ok) {
                     const result = await response.json();
@@ -84,7 +84,7 @@ function formatCNPJ(value) {
                     errorMessage.style.display = 'block';
                 }
             } catch (error) {
-                console.error('[v0] Network error:', error);
+                console.error('Erro de conexão:', error);
                 errorMessage.textContent = 'Erro de conexão. Verifique sua internet e tente novamente.';
                 errorMessage.style.display = 'block';
             } finally {

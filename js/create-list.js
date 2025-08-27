@@ -25,7 +25,7 @@ class CreateListManager {
     const token = localStorage.getItem("bearerToken")
     if (!token) {
       console.log("[v0] No token found, user needs to login")
-      this.showError("Please login to access this page")
+      this.showError("Faça o login para acessar esta página")
       return false
     }
 
@@ -122,16 +122,16 @@ class CreateListManager {
       })
 
       if (response.ok) {
-        this.showSuccess("Material list created successfully!")
+        this.showSuccess("Lista de materiais criada")
         this.resetForm()
       } else {
         const errorText = await response.text()
         console.log("[v0] API Error:", response.status, errorText)
-        this.showError(`Failed to create list: ${response.status} ${response.statusText}`)
+        this.showError(`Falha ao criar lista: ${response.status} ${response.statusText}`)
       }
     } catch (error) {
       console.error("[v0] Submit error:", error)
-      this.showError("Network error. Please try again.")
+      this.showError("Erro de rede. Por favor, tente novamente.")
     } finally {
       this.showLoading(false)
     }
@@ -204,7 +204,7 @@ class CreateListManager {
   }
 
   cancel() {
-    if (confirm("Are you sure you want to cancel? All unsaved changes will be lost.")) {
+    if (confirm("Você tem certeza que deseja cancelar? Todas as alterações não salvas serão perdidas.")) {
       window.location.href = "../index/index.html"
     }
   }
