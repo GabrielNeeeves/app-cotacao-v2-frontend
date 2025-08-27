@@ -1,6 +1,7 @@
-class SchoolsManager {
+        class SchoolsManager {
             constructor() {
                 this.apiBaseUrl = 'http://localhost:8080';
+                this.currentEditingSchool = null;
                 this.init();
             }
 
@@ -17,6 +18,21 @@ class SchoolsManager {
                         window.location.href = 'login.html';
                     });
                 }
+
+                const closeModal = document.getElementById('closeModal');
+                const cancelEdit = document.getElementById('cancelEdit');
+                const editForm = document.getElementById('editSchoolForm');
+
+                closeModal.addEventListener('click', () => this.closeEditModal());
+                cancelEdit.addEventListener('click', () => this.closeEditModal());
+                editForm.addEventListener('submit', (e) => this.handleEditSubmit(e));
+
+                // Close modal when clicking outside
+                document.getElementById('editModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'editModal') {
+                        this.closeEditModal();
+                    }
+                });
             }
 
             async loadSchools() {
@@ -138,7 +154,7 @@ class SchoolsManager {
                         <button class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
                             Ver Detalhes
                         </button>
-                        <button class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
+                        <button class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors edit-btn">
                             Editar
                         </button>
                     </div>
@@ -148,6 +164,12 @@ class SchoolsManager {
                 deleteBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.deleteSchool(school.id, school.nome);
+                });
+
+                const editBtn = card.querySelector('.edit-btn');
+                editBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.openEditModal(school);
                 });
 
                 return card;
@@ -204,12 +226,83 @@ class SchoolsManager {
                         throw new Error(`Erro ao excluir escola: ${response.status}`);
                     }
 
-                    alert(`Escola "${schoolName}" excluída`);
+                    alert(`Escola "${schoolName}" excluída com sucesso!`);
                     this.loadSchools();
 
                 } catch (error) {
                     console.error('[v0] Error deleting school:', error);
                     alert(`Erro ao excluir escola: ${error.message}`);
+                }
+            }
+
+            openEditModal(school) {
+                this.currentEditingSchool = school;
+                
+                // Pre-populate form fields
+                document.getElementById('editNome').value = school.nome;
+                document.getElementById('editEndereco').value = school.endereco;
+                document.getElementById('editTipoEscola').value = school.tipoEscola;
+                document.getElementById('editCnpj').value = school.cnpj;
+                document.getElementById('editTelefone').value = school.telefone;
+
+                document.getElementById('editModal').classList.remove('hidden');
+            }
+
+            closeEditModal() {
+                document.getElementById('editModal').classList.add('hidden');
+                this.currentEditingSchool = null;
+                document.getElementById('editSchoolForm').reset();
+            }
+
+            async handleEditSubmit(e) {
+                e.preventDefault();
+                
+                if (!this.currentEditingSchool) return;
+
+                const formData = new FormData(e.target);
+                const schoolData = {
+                    nome: formData.get('nome'),
+                    endereco: formData.get('endereco'),
+                    tipoEscola: formData.get('tipoEscola'),
+                    cnpj: formData.get('cnpj'),
+                    telefone: formData.get('telefone')
+                };
+
+                try {
+                    const saveBtn = document.getElementById('saveEdit');
+                    saveBtn.disabled = true;
+                    saveBtn.textContent = 'Salvando...';
+
+                    const bearerToken = localStorage.getItem('bearerToken');
+                    if (!bearerToken) {
+                        throw new Error('Token de autenticação não encontrado');
+                    }
+
+                    const response = await fetch(`${this.apiBaseUrl}/escolas/${this.currentEditingSchool.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${bearerToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(schoolData)
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Erro ao atualizar escola: ${response.status} - ${errorText}`);
+                    }
+
+                    alert('Escola atualizada com sucesso!');
+                    this.closeEditModal();
+                    this.loadSchools();
+
+                } catch (error) {
+                    console.error('[v0] Error updating school:', error);
+                    alert(`Erro ao atualizar escola: ${error.message}`);
+                } finally {
+                    const saveBtn = document.getElementById('saveEdit');
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Salvar';
                 }
             }
         }
