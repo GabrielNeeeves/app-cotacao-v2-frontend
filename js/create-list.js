@@ -70,22 +70,22 @@ class CreateListManager {
             <div class="flex justify-between items-center mb-3">
                 <h3 class="text-lg font-medium text-white">Material ${this.materialCount}</h3>
                 <button type="button" class="text-red-400 hover:text-red-300 text-sm" onclick="window.createListManager.removeMaterial(${this.materialCount})">
-                    Remove
+                    Remover
                 </button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Material Name</label>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Nome do material</label>
                     <input type="text" name="materialName" required 
                            class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Quantity</label>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Quantidade</label>
                     <input type="number" name="quantity" required min="1"
                            class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Observations</label>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Observações</label>
                     <input type="text" name="observations"
                            class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                 </div>
