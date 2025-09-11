@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="bg-gray-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Oferta - App cotação</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <h1 class="text-xl font-bold text-purple-400">App cotação</h1>
+                <div class="flex space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-purple-400 transition-colors">Página principal</a>
+                    <a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Buscar materiais</a>
+                </div>
+            </div>
+            <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-medium transition-colors">
+                Sair
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-6 py-8">
+        <div class="bg-gray-800 rounded-lg p-8">
+            <!-- Updated title for offer registration -->
+            <h2 class="text-3xl font-bold text-purple-400 text-center mb-8">Cadastrar Nova Oferta</h2>
+            
+            <form id="ofertaForm" class="space-y-6">
+                <!-- Added grid layout for funcionario and material IDs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- ID do Funcionário -->
+                    <div>
+                        <label for="funcionarioId" class="block text-sm font-medium text-gray-300 mb-2">ID do Funcionário</label>
+                        <input 
+                            type="number" 
+                            id="funcionarioId" 
+                            name="funcionarioId" 
+                            required
+                            min="1"
+                            placeholder="16"
+                            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        >
+                    </div>
+
+                    <!-- ID do Material -->
+                    <div>
+                        <label for="materialId" class="block text-sm font-medium text-gray-300 mb-2">ID do Material</label>
+                        <input 
+                            type="number" 
+                            id="materialId" 
+                            name="materialId" 
+                            required
+                            min="1"
+                            placeholder="2"
+                            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        >
+                    </div>
+                </div>
+
+                <!-- Added grid layout for price and delivery fields -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Preço -->
+                    <div>
+                        <label for="preco" class="block text-sm font-medium text-gray-300 mb-2">Preço (R$)</label>
+                        <input 
+                            type="number" 
+                            id="preco" 
+                            name="preco" 
+                            required
+                            min="0"
+                            step="0.01"
+                            placeholder="25.90"
+                            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        >
+                    </div>
+
+                    <!-- Prazo de Entrega -->
+                    <div>
+                        <label for="prazoEntrega" class="block text-sm font-medium text-gray-300 mb-2">Prazo de Entrega (dias)</label>
+                        <input 
+                            type="number" 
+                            id="prazoEntrega" 
+                            name="prazoEntrega" 
+                            required
+                            min="1"
+                            placeholder="7"
+                            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        >
+                    </div>
+
+                    <!-- Quantidade Mínima -->
+                    <div>
+                        <label for="quantidadeMinima" class="block text-sm font-medium text-gray-300 mb-2">Quantidade Mínima</label>
+                        <input 
+                            type="number" 
+                            id="quantidadeMinima" 
+                            name="quantidadeMinima" 
+                            required
+                            min="1"
+                            placeholder="2"
+                            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        >
+                    </div>
+                </div>
+
+                <!-- Added observations field -->
+                <!-- Observações -->
+                <div>
+                    <label for="observacoes" class="block text-sm font-medium text-gray-300 mb-2">Observações</label>
+                    <textarea 
+                        id="observacoes" 
+                        name="observacoes" 
+                        rows="3"
+                        placeholder="Ex: Entrega gratuita para pedidos acima de 10 unidades"
+                        class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                    ></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-end space-x-4 pt-6">
+                    <button 
+                        type="button" 
+                        onclick="cancelForm()"
+                        class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
+                    >
+                        Cancelar
+                    </button>
+                    <button 
+                        type="submit" 
+                        id="submitBtn"
+                        class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Cadastrar Oferta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <script src="../../js/cadastrarOferta.js"></script>
+</body>
+</html>

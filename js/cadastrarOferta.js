@@ -1,4 +1,4 @@
-document.getElementById('materialForm').addEventListener('submit', async function(e) {
+document.getElementById('ofertaForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
@@ -6,15 +6,34 @@ document.getElementById('materialForm').addEventListener('submit', async functio
             
             // Get form data
             const formData = new FormData(this);
-            const materialData = {
-                nome: formData.get('nome').trim(),
-                descricao: formData.get('descricao').trim(),
-                categoria: formData.get('categoria')
+            const ofertaData = {
+                funcionarioId: parseInt(formData.get('funcionarioId')),
+                materialId: parseInt(formData.get('materialId')),
+                preco: parseFloat(formData.get('preco')),
+                prazoEntrega: parseInt(formData.get('prazoEntrega')),
+                quantidadeMinima: parseInt(formData.get('quantidadeMinima')),
+                observacoes: formData.get('observacoes')?.trim() || ""
             };
 
             // Validate required fields
-            if (!materialData.nome || !materialData.descricao || !materialData.categoria) {
+            if (!ofertaData.funcionarioId || !ofertaData.materialId || !ofertaData.preco || !ofertaData.prazoEntrega || !ofertaData.quantidadeMinima) {
                 showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
+                return;
+            }
+
+            // Validate numeric values
+            if (ofertaData.preco <= 0) {
+                showMessage('O preço deve ser maior que zero.', 'error');
+                return;
+            }
+
+            if (ofertaData.prazoEntrega <= 0) {
+                showMessage('O prazo de entrega deve ser maior que zero.', 'error');
+                return;
+            }
+
+            if (ofertaData.quantidadeMinima <= 0) {
+                showMessage('A quantidade mínima deve ser maior que zero.', 'error');
                 return;
             }
 
@@ -32,23 +51,23 @@ document.getElementById('materialForm').addEventListener('submit', async functio
                 }
 
                 // Make POST request
-                const response = await fetch('http://localhost:8080/materiais', {
+                const response = await fetch('http://localhost:8080/ofertas', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${bearerToken}`
                     },
-                    body: JSON.stringify(materialData)
+                    body: JSON.stringify(ofertaData)
                 });
 
                 const responseText = await response.text();
                 
                 if (response.ok) {
-                    showMessage('Material cadastrado com sucesso!', 'success');
+                    showMessage('Oferta cadastrada com sucesso!', 'success');
                     // Reset form
-                    document.getElementById('materialForm').reset();
+                    document.getElementById('ofertaForm').reset();
                 } else {
-                    let errorMessage = 'Erro ao cadastrar material.';
+                    let errorMessage = 'Erro ao cadastrar oferta.';
                     
                     try {
                         const errorData = JSON.parse(responseText);
@@ -61,8 +80,10 @@ document.getElementById('materialForm').addEventListener('submit', async functio
                             }, 2000);
                         } else if (response.status === 400) {
                             errorMessage = 'Dados inválidos. Verifique os campos e tente novamente.';
+                        } else if (response.status === 404) {
+                            errorMessage = 'Funcionário ou material não encontrado. Verifique os IDs informados.';
                         } else if (response.status === 409) {
-                            errorMessage = 'Material já existe com este nome.';
+                            errorMessage = 'Já existe uma oferta para este funcionário e material.';
                         }
                     }
                     
