@@ -47,11 +47,6 @@ document.getElementById('materialForm').addEventListener('submit', async functio
                     showMessage('Material cadastrado com sucesso!', 'success');
                     // Reset form
                     document.getElementById('materialForm').reset();
-                    
-                    // Redirect after success
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 2000);
                 } else {
                     let errorMessage = 'Erro ao cadastrar material.';
                     
