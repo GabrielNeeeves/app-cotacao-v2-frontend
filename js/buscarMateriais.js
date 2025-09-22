@@ -399,7 +399,19 @@ class SchoolSuppliesSearch {
             ${material.quantidade ? `<span class="text-sm bg-purple-600 text-white px-3 py-1 rounded-full font-medium">Quantidade: ${material.quantidade}</span>` : ""}
           </div>
           ${material.observacoes ? `<div class="mt-2"><p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Observações: ${material.observacoes}</p></div>` : ""}
+          <div class="mt-3 pt-3 border-t border-gray-600">
+            <button class="add-to-inventory-btn w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-700" data-material-name="${material.nome || `Material ${index + 1}`}" data-material-quantity="${material.quantidade || 1}">
+              Adicionar material ao inventário
+            </button>
+          </div>
         `
+
+        const inventoryBtn = materialCard.querySelector(".add-to-inventory-btn")
+        inventoryBtn.addEventListener("click", () => {
+          const materialName = inventoryBtn.getAttribute("data-material-name")
+          const materialQuantity = Number.parseInt(inventoryBtn.getAttribute("data-material-quantity")) || 1
+          this.addToInventory(materialName, materialQuantity, inventoryBtn)
+        })
 
         this.modalMaterialsList.appendChild(materialCard)
       })
@@ -443,6 +455,67 @@ class SchoolSuppliesSearch {
   showNoResults() {
     this.noResults.classList.remove("hidden")
     this.resultsSection.classList.add("hidden")
+  }
+
+  async addToInventory(itemNome, quantidade, buttonElement) {
+    const token = localStorage.getItem("bearerToken")
+    if (!token) {
+      this.showError("Authentication token not found. Please login again.")
+      return
+    }
+
+    // Disable button and show loading state
+    const originalText = buttonElement.textContent
+    buttonElement.disabled = true
+    buttonElement.textContent = "Adicionando..."
+    buttonElement.classList.add("opacity-50", "cursor-not-allowed")
+
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/inventario`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          item_nome: itemNome,
+          quantidade: quantidade,
+        }),
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Authentication failed. Please login again.")
+        } else if (response.status === 403) {
+          throw new Error("You don't have permission to add items to inventory.")
+        } else {
+          const errorData = await response.json().catch(() => null)
+          const errorMessage = errorData?.message || `Failed to add to inventory. Server status: ${response.status}`
+          throw new Error(errorMessage)
+        }
+      }
+
+      // Success feedback
+      buttonElement.textContent = "Adicionado!"
+      buttonElement.classList.remove("bg-green-600", "hover:bg-green-700")
+      buttonElement.classList.add("bg-green-800")
+
+      // Reset button after 2 seconds
+      setTimeout(() => {
+        buttonElement.textContent = originalText
+        buttonElement.disabled = false
+        buttonElement.classList.remove("opacity-50", "cursor-not-allowed", "bg-green-800")
+        buttonElement.classList.add("bg-green-600", "hover:bg-green-700")
+      }, 2000)
+    } catch (error) {
+      console.error("Error adding to inventory:", error)
+      this.showError(error.message || "An error occurred while adding to inventory. Please try again.")
+
+      // Reset button on error
+      buttonElement.textContent = originalText
+      buttonElement.disabled = false
+      buttonElement.classList.remove("opacity-50", "cursor-not-allowed")
+    }
   }
 }
 
