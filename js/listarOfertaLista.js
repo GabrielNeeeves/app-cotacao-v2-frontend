@@ -5,7 +5,18 @@ class OfferListsManager {
         }
 
         init() {
+            this.attachEventListeners();
             this.loadOfferLists();
+        }
+
+        attachEventListeners() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('bearerToken');
+                    window.location.href = 'login.html';
+                });
+            }
         }
 
         async loadOfferLists() {
@@ -17,6 +28,9 @@ class OfferListsManager {
                 if (!bearerToken) {
                     throw new Error('Token de autenticação não encontrado');
                 }
+
+                // Load user inventory first
+                const inventory = await this.loadUserInventory();
 
                 const response = await fetch(`${this.apiBaseUrl}/oferta_lista`, {
                     method: 'GET',
@@ -44,7 +58,8 @@ class OfferListsManager {
                 }
 
                 console.log('[v0] Offer lists loaded:', offerLists);
-                this.displayOfferLists(offerLists);
+                // Pass inventory to display method
+                this.displayOfferLists(offerLists, inventory);
 
             } catch (error) {
                 console.error('[v0] Error loading offer lists:', error);
@@ -52,7 +67,37 @@ class OfferListsManager {
             }
         }
 
-        displayOfferLists(offerLists) {
+        // Added method to load user inventory
+        async loadUserInventory() {
+            try {
+                const bearerToken = localStorage.getItem('bearerToken');
+                if (!bearerToken) {
+                    return [];
+                }
+
+                const response = await fetch(`${this.apiBaseUrl}/inventario`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${bearerToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    console.warn('Could not load inventory:', response.status);
+                    return [];
+                }
+
+                const inventory = await response.json();
+                return inventory || [];
+            } catch (error) {
+                console.warn('Error loading inventory:', error);
+                return [];
+            }
+        }
+
+        // Updated to accept inventory parameter
+        displayOfferLists(offerLists, inventory = []) {
             this.hideAllStates();
 
             if (!offerLists || offerLists.length === 0) {
@@ -64,18 +109,27 @@ class OfferListsManager {
             offerListsGrid.innerHTML = '';
 
             offerLists.forEach(offerList => {
-                const offerListCard = this.createOfferListCard(offerList);
+                // Pass inventory to card creation
+                const offerListCard = this.createOfferListCard(offerList, inventory);
                 offerListsGrid.appendChild(offerListCard);
             });
 
             offerListsGrid.classList.remove('hidden');
         }
 
-        createOfferListCard(offerList) {
+        // Updated to accept inventory parameter and show inventory status
+        createOfferListCard(offerList, inventory = []) {
             const card = document.createElement('div');
             card.className = 'bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors relative';
 
             const totalPrice = offerList.ofertas.reduce((sum, offer) => sum + offer.preco, 0);
+
+            // Calculate how many items are in inventory
+            const itemsInInventory = offerList.ofertas.filter(offer => 
+                inventory.some(item => 
+                    item.item_nome.toLowerCase() === offer.materialNome.toLowerCase()
+                )
+            ).length;
 
             card.innerHTML = `
                 <div class="mb-4">
@@ -85,7 +139,15 @@ class OfferListsManager {
                             <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium">
                                 ${offerList.ofertas.length} ${offerList.ofertas.length === 1 ? 'item' : 'itens'}
                             </span>
-                            <!-- Added delete button -->
+                            ${itemsInInventory > 0 ? `
+                                <span class="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                    ${itemsInInventory} no inventário
+                                </span>
+                            ` : `
+                                <span class="bg-gray-600 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                    0 no inventário
+                                </span>
+                            `}
                             <button onclick="window.offerListsManager.deleteOfferList(${offerList.id})" 
                                     class="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full transition-colors" 
                                     title="Excluir lista">
@@ -95,10 +157,18 @@ class OfferListsManager {
                             </button>
                         </div>
                     </div>
+                    ${itemsInInventory > 0 ? `
+                        <p class="text-green-400 text-sm mb-2">
+                            Você possui ${itemsInInventory} de ${offerList.ofertas.length} itens desta lista no seu inventário
+                        </p>
+                    ` : `
+                        <p class="text-gray-400 text-sm mb-2">
+                            Você não possui nenhum item desta lista no seu inventário
+                        </p>
+                    `}
                 </div>
                 
                 <div class="space-y-3 mb-6">
-                    <!-- Total Price -->
                     <div class="flex items-center text-green-400 font-semibold text-lg">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
@@ -106,13 +176,28 @@ class OfferListsManager {
                         <span>Total: R$ ${totalPrice.toFixed(2)}</span>
                     </div>
                     
-                    <!-- Offers List -->
                     <div class="space-y-2">
                         <h4 class="text-sm font-medium text-gray-300 mb-2">Materiais inclusos:</h4>
-                        ${offerList.ofertas.map(offer => `
-                            <div class="bg-gray-700 rounded-md p-3 text-sm">
+                        ${offerList.ofertas.map(offer => {
+                            // Check if this specific offer is in inventory
+                            const isInInventory = inventory.some(item => 
+                                item.item_nome.toLowerCase() === offer.materialNome.toLowerCase()
+                            );
+                            const inventoryItem = inventory.find(item => 
+                                item.item_nome.toLowerCase() === offer.materialNome.toLowerCase()
+                            );
+                            
+                            return `
+                            <div class="bg-gray-700 rounded-md p-3 text-sm ${isInInventory ? 'border-l-4 border-green-500' : ''}">
                                 <div class="flex justify-between items-start mb-2">
-                                    <span class="font-medium text-white">${offer.materialNome}</span>
+                                    <span class="font-medium ${isInInventory ? 'text-green-400' : 'text-white'}">
+                                        ${offer.materialNome}
+                                        ${isInInventory ? `
+                                            <span class="text-xs text-green-300 ml-2">
+                                                (${inventoryItem.quantidade} no inventário)
+                                            </span>
+                                        ` : ''}
+                                    </span>
                                     <span class="text-green-400 font-semibold">R$ ${offer.preco.toFixed(2)}</span>
                                 </div>
                                 <div class="flex items-center text-gray-300 text-xs space-x-4">
@@ -135,10 +220,10 @@ class OfferListsManager {
                                     </div>
                                 ` : ''}
                             </div>
-                        `).join('')}
+                            `; // <<<====== SYNTAX ERROR WAS HERE: Missing closing backtick
+                        }).join('')}
                     </div>
                     
-                    <!-- List ID -->
                     <div class="flex items-center text-gray-300 text-sm">
                         <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.997 1.997 0 013 12V7a4 4 0 014-4z"/>
@@ -232,8 +317,9 @@ class OfferListsManager {
                 document.body.removeChild(successDiv);
             }, 3000);
         }
-    }
+}
 
-    document.addEventListener('DOMContentLoaded', () => {
-        window.offerListsManager = new OfferListsManager();
-    });
+// Move this outside the class definition
+document.addEventListener('DOMContentLoaded', () => {
+    window.offerListsManager = new OfferListsManager();
+});
