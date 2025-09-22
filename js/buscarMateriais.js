@@ -9,6 +9,7 @@ class SchoolSuppliesSearch {
   initializeElements() {
     this.searchInput = document.getElementById("schoolSearch")
     this.searchBtn = document.getElementById("searchBtn")
+    this.showAllBtn = document.getElementById("showAllBtn")
     this.loadingState = document.getElementById("loadingState")
     this.errorMessage = document.getElementById("errorMessage")
     this.errorText = document.getElementById("errorText")
@@ -49,6 +50,7 @@ class SchoolSuppliesSearch {
 
   attachEventListeners() {
     this.searchBtn.addEventListener("click", () => this.performSearch())
+    this.showAllBtn.addEventListener("click", () => this.showAllLists())
     this.searchInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         this.performSearch()
@@ -75,6 +77,7 @@ class SchoolSuppliesSearch {
     if (!token) {
       this.showError("You must be logged in to search. Please login first.")
       this.searchBtn.disabled = true
+      this.showAllBtn.disabled = true
       this.searchInput.disabled = true
     }
   }
@@ -128,6 +131,45 @@ class SchoolSuppliesSearch {
     }
   }
 
+  async showAllLists() {
+    const token = localStorage.getItem("bearerToken")
+    if (!token) {
+      this.showError("Authentication token not found. Please login again.")
+      return
+    }
+
+    this.showLoading(true)
+    this.hideError()
+    this.hideResults()
+
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/listas_padrao`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Authentication failed. Please login again.")
+        } else if (response.status === 404) {
+          throw new Error("No school supply lists found.")
+        } else {
+          throw new Error(`Failed to load lists: ${response.status}`)
+        }
+      }
+
+      const data = await response.json()
+      this.displayResults(data)
+    } catch (error) {
+      console.error("Show all lists error:", error)
+      this.showError(error.message || "An error occurred while loading lists. Please try again.")
+    } finally {
+      this.showLoading(false)
+    }
+  }
+
   displayResults(data) {
     if (!data || data.length === 0) {
       this.showNoResults()
@@ -148,7 +190,9 @@ class SchoolSuppliesSearch {
     const card = document.createElement("div")
     card.className =
       "bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-purple-500 transition-colors duration-200 flex flex-col justify-between relative"
-    card.setAttribute("data-list-id", item.listaId)
+
+    const listId = item.listaPadraoId || item.listaId
+    card.setAttribute("data-list-id", listId)
 
     let materialInfo = ""
     try {
@@ -178,7 +222,7 @@ class SchoolSuppliesSearch {
       </button>
     `
 
-    card.innerHTML = `
+    let cardContent = `
       ${excludeButtonHtml}
       <div> 
           <div class="mb-4">
@@ -187,7 +231,14 @@ class SchoolSuppliesSearch {
                   <p><span class="text-purple-400">Ano:</span> ${item.anoLetivo || "N/A"}</p>
                   <p><span class="text-purple-400">Série:</span> ${item.serie || "N/A"}</p>
                   <p><span class="text-purple-400">Material:</span> ${materialInfo}</p>
-                  <p><span class="text-purple-400">ID da Lista:</span> ${item.listaId || "N/A"}</p>
+                  <p><span class="text-purple-400">ID da Lista:</span> ${listId || "N/A"}</p>`
+
+    if (item.funcionarioNome) {
+      cardContent += `
+                  <p><span class="text-purple-400">Funcionário:</span> ${item.funcionarioNome}</p>`
+    }
+
+    cardContent += `
               </div>
           </div>
       </div>
@@ -198,14 +249,16 @@ class SchoolSuppliesSearch {
       </div>
     `
 
+    card.innerHTML = cardContent
+
     const viewDetailsBtn = card.querySelector(".view-details-btn")
     viewDetailsBtn.addEventListener("click", () => this.openModal(item))
 
     const excludeBtn = card.querySelector(".exclude-btn")
     if (excludeBtn) {
       excludeBtn.addEventListener("click", (e) => {
-        e.stopPropagation() // Prevent modal from opening
-        this.deleteListItem(item.listaId, card)
+        e.stopPropagation()
+        this.deleteListItem(listId, card)
       })
     }
 
@@ -274,7 +327,8 @@ class SchoolSuppliesSearch {
   openModal(item) {
     this.modalTitle.textContent = `${item.escolaNome || "Escola desconhecida"} - Detalhes da Lista de Materiais`
 
-    this.modalSchoolInfo.innerHTML = `
+    const listId = item.listaPadraoId || item.listaId
+    let modalContent = `
       <div class="grid grid-cols-2 gap-4">
         <div>
           <p class="text-sm text-gray-400">Nome da Escola</p>
@@ -290,10 +344,24 @@ class SchoolSuppliesSearch {
         </div>
         <div>
           <p class="text-sm text-gray-400">ID da Lista</p>
-          <p class="text-white font-medium">${item.listaId || "N/A"}</p>
+          <p class="text-white font-medium">${listId || "N/A"}</p>
+        </div>`
+
+    if (item.funcionarioNome) {
+      modalContent += `
+        <div>
+          <p class="text-sm text-gray-400">Funcionário</p>
+          <p class="text-white font-medium">${item.funcionarioNome}</p>
         </div>
-      </div>
-    `
+        <div>
+          <p class="text-sm text-gray-400">ID do Funcionário</p>
+          <p class="text-white font-medium">${item.funcionarioId || "N/A"}</p>
+        </div>`
+    }
+
+    modalContent += `</div>`
+
+    this.modalSchoolInfo.innerHTML = modalContent
 
     this.displayMaterials(item.materiais)
 
@@ -349,6 +417,7 @@ class SchoolSuppliesSearch {
   showLoading(show) {
     this.loadingState.classList.toggle("hidden", !show)
     this.searchBtn.disabled = show
+    this.showAllBtn.disabled = show
     this.searchBtn.textContent = show ? "Searching..." : "Search"
   }
 

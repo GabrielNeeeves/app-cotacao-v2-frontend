@@ -95,12 +95,6 @@ function formatCNPJ(value) {
             }
         });
 
-        function cancelForm() {
-            if (confirm('Tem certeza que deseja cancelar? Todos os dados serão perdidos.')) {
-                window.location.href = 'index.html';
-            }
-        }
-
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
                 localStorage.removeItem('bearerToken');

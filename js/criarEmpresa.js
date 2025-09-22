@@ -98,7 +98,7 @@ class EmpresaManager {
                         }, 2000);
                     } else {
                         // Try to parse error response
-                        let errorMsg = 'Erro ao criar empresa';
+                        let errorMsg = 'Erro ao criar empresa. Você pode não ter permissão para esta ação.';
                         try {
                             const errorData = JSON.parse(responseText);
                             errorMsg = errorData.message || errorData.error || errorMsg;
@@ -131,12 +131,6 @@ class EmpresaManager {
         }
 
         // Global functions
-        function cancelar() {
-            if (confirm('Tem certeza que deseja cancelar? Os dados não salvos serão perdidos.')) {
-                window.location.href = 'index.html';
-            }
-        }
-
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
                 localStorage.removeItem('bearerToken');
