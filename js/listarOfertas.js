@@ -232,7 +232,7 @@ class OffersManager {
                     <button class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
                         Ver Detalhes
                     </button>
-                    <button class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors" onclick="offersManager.openUpdateModal(${offer.id}, '${offer.material.nome}', ${offer.preco}, ${offer.prazoEntrega}, ${offer.quantidadeMinima}, '${(offer.observacoes || '').replace(/'/g, "\\'")}')">
+                    <button class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors" onclick="offersManager.openUpdateModal(${offer.id}, '${offer.material.nome}', ${offer.preco}, ${offer.prazoEntrega}, ${offer.quantidadeMinima}, '${(offer.observacoes || '').replace(/'/g, "\\'")}', ${offer.material.id})">
                         Editar
                     </button>
                 </div>
@@ -297,12 +297,13 @@ class OffersManager {
             }
         }
 
-        openUpdateModal(offerId, materialNome, preco, prazoEntrega, quantidadeMinima, observacoes) {
+        openUpdateModal(offerId, materialNome, preco, prazoEntrega, quantidadeMinima, observacoes, materialId) {
             if (!document.getElementById('updateModal')) {
                 this.createUpdateModal();
             }
 
             document.getElementById('updateOfferId').value = offerId;
+            document.getElementById('updateMaterialId').value = materialId;
             document.getElementById('updatePreco').value = preco;
             document.getElementById('updatePrazoEntrega').value = prazoEntrega;
             document.getElementById('updateQuantidadeMinima').value = quantidadeMinima;
@@ -324,6 +325,7 @@ class OffersManager {
                     
                     <form id="updateOfferForm" class="space-y-4">
                         <input type="hidden" id="updateOfferId">
+                        <input type="hidden" id="updateMaterialId">
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-2">Preço (R$)</label>
@@ -378,6 +380,7 @@ class OffersManager {
         async updateOffer() {
             try {
                 const offerId = document.getElementById('updateOfferId').value;
+                const materialId = document.getElementById('updateMaterialId').value;
                 const preco = parseFloat(document.getElementById('updatePreco').value);
                 const prazoEntrega = parseInt(document.getElementById('updatePrazoEntrega').value);
                 const quantidadeMinima = parseInt(document.getElementById('updateQuantidadeMinima').value);
@@ -395,11 +398,20 @@ class OffersManager {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        funcionarioId: 16,
+                        materialId,
                         preco,
                         prazoEntrega,
                         quantidadeMinima,
                         observacoes
-                    })
+                    }),
+                });
+                console.log('Request body:', {
+                    funcionarioId: 16,
+                    preco,
+                    prazoEntrega,
+                    quantidadeMinima,
+                    observacoes
                 });
 
                 if (!response.ok) {
