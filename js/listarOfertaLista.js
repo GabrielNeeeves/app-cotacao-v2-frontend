@@ -239,6 +239,10 @@ class OfferListsManager {
                     <button class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
                         Editar
                     </button>
+                    <button onclick="window.offerListsManager.createPaymentPreference(${JSON.stringify(offerList).replace(/"/g, '&quot;')})" 
+                        class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
+                        Pagar
+                    </button>
                 </div>
             `;
 
@@ -317,6 +321,47 @@ class OfferListsManager {
                 document.body.removeChild(successDiv);
             }, 3000);
         }
+        async createPaymentPreference(offerList) {
+                try {
+                    const bearerToken = localStorage.getItem('bearerToken');
+                    if (!bearerToken) {
+                        throw new Error('Token de autenticação não encontrado');
+                    }
+
+                    const totalPrice = offerList.ofertas.reduce((sum, offer) => sum + offer.preco, 0);
+
+                    const response = await fetch(`${this.apiBaseUrl}/pagamentos/criar_preferencia`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${bearerToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            titulo: `Lista de Ofertas #${offerList.id}`,
+                            quantidade: 1,
+                            preco: totalPrice
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Erro ao criar preferência de pagamento: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.preferenceId) {
+                        // Redirect to MercadoPago checkout
+                        window.location.href = `https://sandbox.mercadopago.com.br/checkout/v1/redirect?pref_id=${result.preferenceId}`;
+                    } else {
+                        throw new Error('ID de preferência não encontrado na resposta');
+                    }
+
+                } catch (error) {
+                    console.error('Error creating payment preference:', error);
+                    alert(`Erro ao processar pagamento: ${error.message}`);
+                }
+            }
+
 }
 
 // Move this outside the class definition
