@@ -96,7 +96,7 @@ document.getElementById('materialForm').addEventListener('submit', async functio
 
         function cancelForm() {
             if (confirm('Tem certeza que deseja cancelar? Os dados não salvos serão perdidos.')) {
-                window.location.href = 'index.html';
+                window.location.href = '../index/index.html';
             }
         }
 
