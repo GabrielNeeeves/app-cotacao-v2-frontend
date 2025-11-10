@@ -7,7 +7,8 @@ document.getElementById('ofertaForm').addEventListener('submit', async function(
             // Get form data
             const formData = new FormData(this);
             const ofertaData = {
-                funcionarioId: parseInt(formData.get('funcionarioId')),
+                // funcionarioId: parseInt(formData.get('funcionarioId')),
+                funcionarioId: localStorage.getItem('funcionarioId'),
                 materialId: parseInt(formData.get('materialId')),
                 preco: parseFloat(formData.get('preco')),
                 prazoEntrega: parseInt(formData.get('prazoEntrega')),

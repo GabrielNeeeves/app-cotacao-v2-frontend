@@ -55,38 +55,63 @@ class AuthService {
     localStorage.setItem("bearerToken", token)
   }
 
-  // Store user role in localStorage
   storeUserRole(role) {
     localStorage.setItem("userRole", role)
   }
 
-  // Store user ID in localStorage
-  storeUserId(userId) {
-  localStorage.setItem("clienteId", userId)
-}
+  storeClienteId(id) {
+    localStorage.setItem("clienteId", id)
+  }
 
-  // Get stored token
+  storeFuncionarioId(id) {
+    localStorage.setItem("funcionarioId", id)
+  }
+
+  storeAdminId(id) {
+    localStorage.setItem("adminId", id)
+  }
+
+  storeEmpresaId(id) {
+    localStorage.setItem("empresaId", id)
+  }
+
+  storeEscolaId(id) {
+    localStorage.setItem("escolaId", id)
+  }
+
   getToken() {
     return localStorage.getItem("bearerToken")
   }
 
-  // Get stored user role
   getUserRole() {
     const roles = this.getUserRoles()
-    return roles.length > 0 ? roles[0] : null // Return first role or null
+    return roles.length > 0 ? roles[0] : null
   }
 
-  // Get stored user ID
-  getUserId() {
+  getClienteId() {
     return localStorage.getItem("clienteId")
   }
 
-  // Check if user is authenticated
+  getFuncionarioId() {
+    return localStorage.getItem("funcionarioId")
+  }
+
+  getAdminId() {
+    return localStorage.getItem("adminId")
+  }
+
+  getEmpresaId() {
+    return localStorage.getItem("empresaId")
+  }
+
+  getEscolaId() {
+    return localStorage.getItem("escolaId")
+  }
+
   isAuthenticated() {
     return !!this.getToken()
   }
 
-  // Login function
   async login(email, password) {
     try {
       const response = await fetch(this.apiUrl, {
@@ -119,25 +144,20 @@ class AuthService {
           data = {}
         }
       } else {
-        // Handle non-JSON responses
         const text = await response.text()
         data = { message: text || "Unknown error occurred" }
       }
 
       if (response.ok) {
-        // Store the Bearer Token
-        if (data.token) {
-          this.storeToken(data.token)
-        }
+        if (data.token) this.storeToken(data.token)
+        if (data.role) this.storeUserRole(data.role)
 
-        // Store user role if provided
-        if (data.role) {
-          this.storeUserRole(data.role)
-        }
+        if (data.clienteId) this.storeClienteId(data.clienteId)
+        if (data.funcionarioId) this.storeFuncionarioId(data.funcionarioId)
+        if (data.adminId) this.storeAdminId(data.adminId)
 
-        if (data.clienteId) {
-          this.storeUserId(data.clienteId)
-        }
+        if (data.empresaId) this.storeEmpresaId(data.empresaId)
+        if (data.escolaId) this.storeEscolaId(data.escolaId)
 
         return { success: true, data }
       } else {
@@ -155,15 +175,18 @@ class AuthService {
     }
   }
 
-  // Logout function
   logout() {
     localStorage.removeItem("bearerToken")
     localStorage.removeItem("userRole")
     localStorage.removeItem("clienteId")
+    localStorage.removeItem("funcionarioId")
+    localStorage.removeItem("adminId")
+    localStorage.removeItem("empresaId")
+    localStorage.removeItem("escolaId")
   }
 }
 
 window.AuthService = AuthService
-// Create global auth service instance
+
 const authService = new AuthService()
 window.authService = authService
