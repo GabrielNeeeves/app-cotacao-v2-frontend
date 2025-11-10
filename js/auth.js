@@ -60,6 +60,11 @@ class AuthService {
     localStorage.setItem("userRole", role)
   }
 
+  // Store user ID in localStorage
+  storeUserId(userId) {
+  localStorage.setItem("clienteId", userId)
+}
+
   // Get stored token
   getToken() {
     return localStorage.getItem("bearerToken")
@@ -69,6 +74,11 @@ class AuthService {
   getUserRole() {
     const roles = this.getUserRoles()
     return roles.length > 0 ? roles[0] : null // Return first role or null
+  }
+
+  // Get stored user ID
+  getUserId() {
+    return localStorage.getItem("clienteId")
   }
 
   // Check if user is authenticated
@@ -125,6 +135,10 @@ class AuthService {
           this.storeUserRole(data.role)
         }
 
+        if (data.clienteId) {
+          this.storeUserId(data.clienteId)
+        }
+
         return { success: true, data }
       } else {
         return {
@@ -145,6 +159,7 @@ class AuthService {
   logout() {
     localStorage.removeItem("bearerToken")
     localStorage.removeItem("userRole")
+    localStorage.removeItem("clienteId")
   }
 }
 

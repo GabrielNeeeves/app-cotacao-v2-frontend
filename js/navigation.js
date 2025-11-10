@@ -1,7 +1,7 @@
 // Navigation and routing logic
 class NavigationManager {
   constructor() {
-    this.dashboardUrl = "../index/index.html"
+    this.dashboardUrl = "../../pages/index/index.html"
   }
 
   // Redirect to dashboard
@@ -19,7 +19,7 @@ class NavigationManager {
   // Initialize navigation
   initialize(authService) {
     // Check authentication status on page load only for login page
-    if (window.location.pathname.includes("login.html") || window.location.pathname.endsWith("/")) {
+    if (window.location.pathname.includes("../pages/index/index.html") || window.location.pathname.endsWith("/")) {
       this.checkAuthenticationStatus(authService)
     }
   }

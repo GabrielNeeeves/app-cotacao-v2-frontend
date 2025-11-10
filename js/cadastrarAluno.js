@@ -28,41 +28,56 @@ const RoleAuth = {
         checkPageAccess(requiredRole) {
             if (!this.hasRole(requiredRole)) {
                 alert('Você não tem permissão para acessar esta página.');
-                window.location.href = '../index/index.html';
+                window.location.href = 'index.html';
                 return false;
             }
             return true;
         }
     };
 
-    function formatCNPJ(value) {
-        return value
-            .replace(/\D/g, '')
-            .replace(/^(\d{2})(\d)/, '$1.$2')
-            .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-            .replace(/\.(\d{3})(\d)/, '.$1/$2')
-            .replace(/(\d{4})(\d)/, '$1-$2')
-            .substring(0, 18);
+    async function loadEscolas() {
+        const escolaSelect = document.getElementById('escolaId');
+        
+        try {
+            const bearerToken = localStorage.getItem('bearerToken');
+            const response = await fetch('http://localhost:8080/escolas', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearerToken}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao carregar escolas');
+            }
+
+            const escolas = await response.json();
+            
+            escolaSelect.innerHTML = '<option value="">Selecione a escola</option>';
+            
+            escolas.forEach(escola => {
+                const option = document.createElement('option');
+                option.value = escola.id;
+                option.textContent = escola.nome;
+                escolaSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('[v0] Error loading escolas:', error);
+            escolaSelect.innerHTML = '<option value="">Erro ao carregar escolas</option>';
+            
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = 'Erro ao carregar lista de escolas. Tente recarregar a página.';
+            errorMessage.classList.remove('hidden');
+        }
     }
-
-    function formatPhone(value) {
-        return value
-            .replace(/\D/g, '')
-            .replace(/^(\d{2})(\d)/, '($1) $2')
-            .replace(/(\d{4})(\d)/, '$1-$2')
-            .substring(0, 15);
-    }
-
-    document.getElementById('cnpj').addEventListener('input', function(e) {
-        e.target.value = formatCNPJ(e.target.value);
-    });
-
-    document.getElementById('telefone').addEventListener('input', function(e) {
-        e.target.value = formatPhone(e.target.value);
-    });
 
     document.addEventListener('DOMContentLoaded', function() {
-        RoleAuth.checkPageAccess(RoleAuth.ROLES.ADMINISTRADOR);
+        RoleAuth.checkPageAccess(RoleAuth.ROLES.CLIENTE);
+        
+        const currentYear = new Date().getFullYear();
+        document.getElementById('anoLetivo').value = currentYear;
+        
+        loadEscolas();
         
         const logoutBtn = document.getElementById('logoutBtn');
         
@@ -71,13 +86,13 @@ const RoleAuth = {
                 if (confirm('Tem certeza que deseja sair?')) {
                     localStorage.removeItem('bearerToken');
                     localStorage.removeItem('userRole');
-                    window.location.href = '../login/login.html';
+                    window.location.href = 'login.html';
                 }
             });
         }
     });
 
-    document.getElementById('escolaForm').addEventListener('submit', async function(e) {
+    document.getElementById('alunoForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const submitBtn = document.getElementById('submitBtn');
@@ -96,27 +111,31 @@ const RoleAuth = {
         
         try {
             const formData = new FormData(e.target);
-            const escolaData = {
+            const clienteId = localStorage.getItem('clienteId');
+            
+            const alunoData = {
+                clienteId: clienteId ? parseInt(clienteId) : null,
+                escolaId: parseInt(formData.get('escolaId')),
                 nome: formData.get('nome'),
-                endereco: formData.get('endereco'),
-                tipoEscola: formData.get('tipoEscola'),
-                cnpj: formData.get('cnpj'),
-                telefone: formData.get('telefone')
+                serie: formData.get('serie'),
+                turno: formData.get('turno'),
+                anoLetivo: parseInt(formData.get('anoLetivo')),
+                observacoes: formData.get('observacoes') || null
             };
 
-            console.log('[v0] Sending escola data:', escolaData);
+            console.log('[v0] Sending aluno data:', alunoData);
 
-            const response = await fetch('http://localhost:8080/escolas', {
+            const bearerToken = localStorage.getItem('bearerToken');
+            const response = await fetch('http://localhost:8080/alunos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('bearerToken')}`
+                    'Authorization': `Bearer ${bearerToken}`
                 },
-                body: JSON.stringify(escolaData)
+                body: JSON.stringify(alunoData)
             });
 
             console.log('[v0] Response status:', response.status);
-            console.log('[v0] Response headers:', response.headers.get('content-type'));
 
             const responseText = await response.text();
             console.log('[v0] Response text:', responseText);
@@ -125,23 +144,24 @@ const RoleAuth = {
                 let result;
                 try {
                     result = JSON.parse(responseText);
-                    console.log('[v0] Escola created successfully:', result);
+                    console.log('[v0] Aluno created successfully:', result);
                 } catch (jsonError) {
                     console.log('[v0] Response is not JSON, treating as success message:', responseText);
                     result = { message: responseText };
                 }
                 
-                successMessage.textContent = 'Escola criada com sucesso!';
+                successMessage.textContent = 'Aluno cadastrado com sucesso!';
                 successMessage.classList.remove('hidden');
                 
                 setTimeout(() => {
                     e.target.reset();
+                    document.getElementById('anoLetivo').value = new Date().getFullYear();
                     successMessage.classList.add('hidden');
                 }, 3000);
             } else {
-                console.error('[v0] Error creating escola:', responseText);
+                console.error('[v0] Error creating aluno:', responseText);
                 
-                let errorMsg = `Erro ao criar escola (${response.status})`;
+                let errorMsg = `Erro ao cadastrar aluno (${response.status})`;
                 
                 try {
                     const errorData = JSON.parse(responseText);
@@ -167,35 +187,30 @@ const RoleAuth = {
 
     function cancelForm() {
         if (confirm('Tem certeza que deseja cancelar? Todos os dados serão perdidos.')) {
-            window.location.href = '../index/index.html';
+            window.location.href = 'index.html';
         }
     }
 
     function validateForm() {
         const nome = document.getElementById('nome').value.trim();
-        const endereco = document.getElementById('endereco').value.trim();
-        const tipoEscola = document.getElementById('tipoEscola').value;
-        const cnpj = document.getElementById('cnpj').value.trim();
-        const telefone = document.getElementById('telefone').value.trim();
+        const escolaId = document.getElementById('escolaId').value;
+        const serie = document.getElementById('serie').value.trim();
+        const turno = document.getElementById('turno').value;
+        const anoLetivo = document.getElementById('anoLetivo').value;
 
-        if (!nome || !endereco || !tipoEscola || !cnpj || !telefone) {
+        if (!nome || !escolaId || !serie || !turno || !anoLetivo) {
             return false;
         }
 
-        const cnpjNumbers = cnpj.replace(/\D/g, '');
-        if (cnpjNumbers.length !== 14) {
-            return false;
-        }
-
-        const phoneNumbers = telefone.replace(/\D/g, '');
-        if (phoneNumbers.length < 10 || phoneNumbers.length > 11) {
+        const year = parseInt(anoLetivo);
+        if (year < 2000 || year > 2100) {
             return false;
         }
 
         return true;
     }
 
-    document.querySelectorAll('input, select').forEach(input => {
+    document.querySelectorAll('input, select, textarea').forEach(input => {
         input.addEventListener('input', function() {
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = !validateForm();

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Escola - App cotação</title>
+    <title>Cadastrar Aluno - App cotação</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -20,94 +20,107 @@
             <a href="#" class="text-xl font-bold text-gray-100">App cotação</a>
             <div class="flex space-x-6">
                 <a href="../index/index.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Página principal</a>
-                <a href="../buscarMateriais/buscarMateriais.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Buscar materiais</a>
-                <a href="../createList/create-list.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Criar lista padrão</a>
-                <a href="../criarEscola/criarEscola.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Cadastrar escola</a>
-                <a href="../login/login.html" class="text-gray-300 hover:text-purple-400 transition duration-300">Login</a>
             </div>
         </div>
     </nav>
 
     <main class="container mx-auto p-8">
         <div class="max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-xl p-8">
-            <h1 class="text-3xl font-bold text-center text-purple-400 mb-8">Criar Nova Escola</h1>
+            <h1 class="text-3xl font-bold text-center text-purple-400 mb-8">Cadastrar Novo Aluno</h1>
             
             <div class="bg-red-600 text-white p-3 rounded-md mb-6 hidden" id="errorMessage"></div>
             <div class="bg-green-600 text-white p-3 rounded-md mb-6 hidden" id="successMessage"></div>
 
-            <form id="escolaForm">
+            <form id="alunoForm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Nome do Aluno -->
                     <div class="md:col-span-2">
-                        <label for="nome" class="block text-sm font-medium text-gray-300 mb-2">Nome da Escola</label>
+                        <label for="nome" class="block text-sm font-medium text-gray-300 mb-2">Nome do Aluno</label>
                         <input 
                             type="text" 
                             id="nome" 
                             name="nome" 
-                            placeholder="Ex: Escola Estadual João Silva"
+                            placeholder="Ex: João Silva Santos"
                             class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             required
                         >
                     </div>
 
+                    <!-- Escola -->
                     <div class="md:col-span-2">
-                        <label for="endereco" class="block text-sm font-medium text-gray-300 mb-2">Endereço</label>
-                        <input 
-                            type="text" 
-                            id="endereco" 
-                            name="endereco" 
-                            placeholder="Ex: Rua das Flores, 123, Centro"
-                            class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            required
-                        >
-                    </div>
-
-                    <div>
-                        <label for="tipoEscola" class="block text-sm font-medium text-gray-300 mb-2">Tipo de Escola</label>
-                        <select id="tipoEscola" name="tipoEscola" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
-                            <option value="">Selecione o tipo</option>
-                            <option value="PUBLICA">Pública</option>
-                            <option value="PRIVADA">Privada</option>
+                        <label for="escolaId" class="block text-sm font-medium text-gray-300 mb-2">Escola</label>
+                        <select id="escolaId" name="escolaId" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                            <option value="">Carregando escolas...</option>
                         </select>
                     </div>
 
+                    <!-- Série -->
                     <div>
-                        <label for="telefone" class="block text-sm font-medium text-gray-300 mb-2">Telefone</label>
+                        <label for="serie" class="block text-sm font-medium text-gray-300 mb-2">Série</label>
                         <input 
-                            type="tel" 
-                            id="telefone" 
-                            name="telefone" 
-                            placeholder="(17) 3444-4332"
+                            type="text" 
+                            id="serie" 
+                            name="serie" 
+                            placeholder="Ex: 8º Ano"
                             class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             required
                         >
                     </div>
 
-                    <div class="md:col-span-2">
-                        <label for="cnpj" class="block text-sm font-medium text-gray-300 mb-2">CNPJ</label>
+                    <!-- Turno -->
+                    <div>
+                        <label for="turno" class="block text-sm font-medium text-gray-300 mb-2">Turno</label>
+                        <select id="turno" name="turno" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                            <option value="">Selecione o turno</option>
+                            <option value="MATUTINO">Matutino</option>
+                            <option value="VESPERTINO">Vespertino</option>
+                            <option value="NOTURNO">Noturno</option>
+                        </select>
+                    </div>
+
+                    <!-- Ano Letivo -->
+                    <div>
+                        <label for="anoLetivo" class="block text-sm font-medium text-gray-300 mb-2">Ano Letivo</label>
                         <input 
-                            type="text" 
-                            id="cnpj" 
-                            name="cnpj" 
-                            placeholder="82.649.740/0001-18"
+                            type="number" 
+                            id="anoLetivo" 
+                            name="anoLetivo" 
+                            placeholder="Ex: 2024"
+                            min="2000"
+                            max="2100"
                             class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             required
                         >
+                    </div>
+
+                    <!-- Observações -->
+                    <div class="md:col-span-2">
+                        <label for="observacoes" class="block text-sm font-medium text-gray-300 mb-2">Observações (opcional)</label>
+                        <textarea 
+                            id="observacoes" 
+                            name="observacoes" 
+                            rows="4"
+                            placeholder="Ex: Necessidades especiais, observações importantes..."
+                            class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                        ></textarea>
                     </div>
                 </div>
 
                 <div class="flex justify-end space-x-4">
+                    <button type="button" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-md font-medium transition-colors duration-200" onclick="cancelForm()">
+                        Cancelar
+                    </button>
                     <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-md font-medium transition-colors duration-200 disabled:bg-gray-500 disabled:cursor-not-allowed" id="submitBtn">
-                        <span class="btn-text">Criar Escola</span>
+                        <span class="btn-text">Cadastrar Aluno</span>
                         <div class="loading hidden items-center space-x-2" id="loadingSpinner">
                             <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            <span>Criando...</span>
+                            <span>Cadastrando...</span>
                         </div>
                     </button>
                 </div>
             </form>
         </div>
     </main>
-
-    <script src="../js/criarEscola.js"></script>
+    <script src="../../js/cadastrarAluno.js"></script>
 </body>
 </html>

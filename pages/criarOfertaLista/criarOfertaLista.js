@@ -1,4 +1,41 @@
-class OfferListCreator {
+const RoleAuth = {
+        ROLES: {
+            CLIENTE: 'ROLE_CLIENTE',
+            FUNCIONARIO: 'ROLE_FUNCIONARIO',
+            ADMINISTRADOR: 'ROLE_ADMINISTRADOR'
+        },
+        
+        ROLE_HIERARCHY: {
+            'ROLE_CLIENTE': 1,
+            'ROLE_FUNCIONARIO': 2,
+            'ROLE_ADMINISTRADOR': 3
+        },
+
+        getUserRole() {
+            return localStorage.getItem('userRole');
+        },
+
+        hasRole(requiredRole) {
+            const userRole = this.getUserRole();
+            if (!userRole) return false;
+            
+            const userLevel = this.ROLE_HIERARCHY[userRole] || 0;
+            const requiredLevel = this.ROLE_HIERARCHY[requiredRole] || 0;
+            
+            return userLevel >= requiredLevel;
+        },
+
+        checkPageAccess(requiredRole) {
+            if (!this.hasRole(requiredRole)) {
+                alert('Você não tem permissão para acessar esta página.');
+                window.location.href = '../index/index.html';
+                return false;
+            }
+            return true;
+        }
+    };
+
+    class OfferListCreator {
         constructor() {
             this.apiBaseUrl = 'http://localhost:8080';
             this.selectedOfferIds = new Set();
@@ -6,6 +43,8 @@ class OfferListCreator {
         }
 
         init() {
+            RoleAuth.checkPageAccess(RoleAuth.ROLES.FUNCIONARIO);
+            
             this.attachEventListeners();
             this.loadOffers();
         }
@@ -219,6 +258,7 @@ class OfferListCreator {
                 }
 
                 alert('Lista de ofertas criada com sucesso!');
+                window.location.href = 'listar-oferta-lista.html';
 
             } catch (error) {
                 console.error('Error creating offer list:', error);
