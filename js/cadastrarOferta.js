@@ -1,4 +1,63 @@
-document.getElementById('ofertaForm').addEventListener('submit', async function(e) {
+const RoleAuth = {
+            ROLES: {
+                CLIENTE: 'ROLE_CLIENTE',
+                FUNCIONARIO: 'ROLE_FUNCIONARIO',
+                ADMINISTRADOR: 'ROLE_ADMINISTRADOR'
+            },
+            
+            ROLE_HIERARCHY: {
+                'ROLE_CLIENTE': 1,
+                'ROLE_FUNCIONARIO': 2,
+                'ROLE_ADMINISTRADOR': 3
+            },
+
+            getUserRole() {
+                return localStorage.getItem('userRole');
+            },
+
+            hasRole(requiredRole) {
+                const userRole = this.getUserRole();
+                if (!userRole) return false;
+                
+                const userLevel = this.ROLE_HIERARCHY[userRole] || 0;
+                const requiredLevel = this.ROLE_HIERARCHY[requiredRole] || 0;
+                
+                return userLevel >= requiredLevel;
+            },
+
+            checkPageAccess(requiredRole) {
+                if (!this.hasRole(requiredRole)) {
+                    alert('Você não tem permissão para acessar esta página.');
+                    window.location.href = '../index/index.html';
+                    return false;
+                }
+                return true;
+            }
+        };
+
+        window.addEventListener('load', function() {
+            const bearerToken = localStorage.getItem('bearerToken');
+            if (!bearerToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            if (!RoleAuth.hasRole(RoleAuth.ROLES.FUNCIONARIO)) {
+                alert('Você não tem permissão para acessar esta página.');
+                window.location.href = '../index/index.html';
+                return;
+            }
+
+            // Check if empresaId exists in localStorage
+            const empresaId = localStorage.getItem('empresaId');
+            if (!empresaId) {
+                alert('EmpresaId não encontrado. Você precisa estar associado a uma empresa para cadastrar ofertas.');
+                window.location.href = '../index/index.html';
+                return;
+            }
+        });
+
+        document.getElementById('ofertaForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
@@ -7,8 +66,7 @@ document.getElementById('ofertaForm').addEventListener('submit', async function(
             // Get form data
             const formData = new FormData(this);
             const ofertaData = {
-                // funcionarioId: parseInt(formData.get('funcionarioId')),
-                funcionarioId: localStorage.getItem('funcionarioId'),
+                funcionarioId: parseInt(formData.get('funcionarioId')),
                 materialId: parseInt(formData.get('materialId')),
                 preco: parseFloat(formData.get('preco')),
                 prazoEntrega: parseInt(formData.get('prazoEntrega')),
@@ -67,6 +125,11 @@ document.getElementById('ofertaForm').addEventListener('submit', async function(
                     showMessage('Oferta cadastrada com sucesso!', 'success');
                     // Reset form
                     document.getElementById('ofertaForm').reset();
+                    
+                    // Redirect after success
+                    setTimeout(() => {
+                        window.location.href = '../index/index.html';
+                    }, 2000);
                 } else {
                     let errorMessage = 'Erro ao cadastrar oferta.';
                     
@@ -118,13 +181,14 @@ document.getElementById('ofertaForm').addEventListener('submit', async function(
 
         function cancelForm() {
             if (confirm('Tem certeza que deseja cancelar? Os dados não salvos serão perdidos.')) {
-                window.location.href = 'index.html';
+                window.location.href = '../index/index.html';
             }
         }
 
-        window.addEventListener('load', function() {
-            const bearerToken = localStorage.getItem('bearerToken');
-            if (!bearerToken) {
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('bearerToken');
+                localStorage.removeItem('userRole');
                 window.location.href = 'login.html';
             }
-        });
+        }

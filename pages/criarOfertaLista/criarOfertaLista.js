@@ -43,7 +43,20 @@ const RoleAuth = {
         }
 
         init() {
-            RoleAuth.checkPageAccess(RoleAuth.ROLES.FUNCIONARIO);
+            const userRole = RoleAuth.getUserRole();
+            const empresaId = localStorage.getItem('empresaId');
+            
+            if (!RoleAuth.hasRole(RoleAuth.ROLES.FUNCIONARIO)) {
+                alert('Você precisa ter permissão de FUNCIONARIO para acessar esta página.');
+                window.location.href = '../index/index.html';
+                return;
+            }
+            
+            if (userRole === RoleAuth.ROLES.FUNCIONARIO && !empresaId) {
+                alert('Você precisa estar vinculado a uma empresa para acessar esta página.');
+                window.location.href = '../index/index.html';
+                return;
+            }
             
             this.attachEventListeners();
             this.loadOffers();
