@@ -271,7 +271,6 @@ const RoleAuth = {
                 }
 
                 alert('Lista de ofertas criada com sucesso!');
-                window.location.href = 'listar-oferta-lista.html';
 
             } catch (error) {
                 console.error('Error creating offer list:', error);

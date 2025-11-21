@@ -50,7 +50,6 @@ class AuthService {
     return result
   }
 
-  // Store token in localStorage
   storeToken(token) {
     localStorage.setItem("bearerToken", token)
   }
@@ -79,6 +78,15 @@ class AuthService {
     localStorage.setItem("escolaId", id)
   }
 
+  storeEmpresa(nome) {
+    localStorage.setItem("empresa", nome)
+  }
+
+  storeEscola(nome) {
+    localStorage.setItem("escola", nome)
+  }
+
+
   getToken() {
     return localStorage.getItem("bearerToken")
   }
@@ -106,6 +114,14 @@ class AuthService {
 
   getEscolaId() {
     return localStorage.getItem("escolaId")
+  }
+
+  getEmpresa() {
+    return localStorage.getItem("empresa")
+  }
+
+  getEscola() {
+    return localStorage.getItem("escola")
   }
 
   isAuthenticated() {
@@ -159,6 +175,9 @@ class AuthService {
         if (data.empresaId) this.storeEmpresaId(data.empresaId)
         if (data.escolaId) this.storeEscolaId(data.escolaId)
 
+          if (data.empresa) this.storeEmpresa(data.empresa)
+        if (data.escola) this.storeEscola(data.escola)
+
         return { success: true, data }
       } else {
         return {
@@ -183,6 +202,8 @@ class AuthService {
     localStorage.removeItem("adminId")
     localStorage.removeItem("empresaId")
     localStorage.removeItem("escolaId")
+    localStorage.removeItem("empresa")
+    localStorage.removeItem("escola")
   }
 }
 
