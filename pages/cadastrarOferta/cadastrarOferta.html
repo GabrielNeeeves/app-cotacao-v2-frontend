@@ -37,16 +37,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- ID do Material -->
                     <div>
-                        <label for="materialId" class="block text-sm font-medium text-gray-300 mb-2">ID do Material</label>
-                        <input 
-                            type="number" 
+                        <label for="materialId" class="block text-sm font-medium text-gray-300 mb-2">Material</label>
+                        <select 
                             id="materialId" 
                             name="materialId" 
                             required
-                            min="1"
-                            placeholder="2"
                             class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         >
+                            <option value="">Selecione um material</option>
+                        </select>
                     </div>
                 </div>
 

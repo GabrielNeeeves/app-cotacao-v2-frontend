@@ -95,11 +95,7 @@ const RoleAuth = {
                 showMessage('Material cadastrado com sucesso!', 'success');
                 // Reset form
                 document.getElementById('materialForm').reset();
-                
-                // Redirect after success
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 2000);
+            
             } else {
                 let errorMessage = 'Erro ao cadastrar material.';
                 
@@ -109,9 +105,6 @@ const RoleAuth = {
                 } catch (e) {
                     if (response.status === 401) {
                         errorMessage = 'Não autorizado. Faça login novamente.';
-                        setTimeout(() => {
-                            window.location.href = 'login.html';
-                        }, 2000);
                     } else if (response.status === 400) {
                         errorMessage = 'Dados inválidos. Verifique os campos e tente novamente.';
                     } else if (response.status === 409) {

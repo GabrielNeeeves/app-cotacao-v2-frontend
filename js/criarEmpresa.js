@@ -130,11 +130,7 @@ const RoleAuth = {
                     
                     // Reset form
                     document.getElementById('empresaForm').reset();
-                    
-                    // Redirect after 2 seconds
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 2000);
+                
                 } else {
                     // Try to parse error response
                     let errorMsg = 'Erro ao criar empresa';

@@ -84,10 +84,6 @@ document.querySelectorAll('input[name="vinculo"]').forEach(radio => {
                     document.getElementById('empresaId').required = true;
                     document.getElementById('escolaId').required = false;
                     
-                    // Redirect after 2 seconds
-                    setTimeout(() => {
-                        window.location.href = '../pages/index/index.html';
-                    }, 2000);
                 } else {
                     // Error
                     let errorText = 'Erro ao registrar funcionário.';
