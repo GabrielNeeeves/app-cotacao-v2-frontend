@@ -30,19 +30,19 @@ class CreateListManager {
 
               if (!token) {
                   alert("Por favor, faça login para acessar esta página.");
-                  window.location.href = "login.html";
+                  window.location.href = "../login/login.html";
                   return false;
               }
 
               if (userRole !== "ROLE_FUNCIONARIO") {
                   alert("Acesso negado. Apenas funcionários podem criar listas padrão.");
-                  window.location.href = "index.html";
+                  window.location.href = "../index/index.html";
                   return false;
               }
 
               if (!escolaId || !funcionarioId) {
                   alert("Acesso negado. Você precisa estar vinculado a uma escola.");
-                  window.location.href = "index.html";
+                  window.location.href = "../index/index.html";
                   return false;
               }
 
@@ -209,7 +209,7 @@ class CreateListManager {
 
           cancel() {
               if (confirm("Você tem certeza que deseja cancelar? Todas as alterações não salvas serão perdidas.")) {
-                  window.location.href = "index.html";
+                  window.location.href = "../index/index.html";
               }
           }
       }

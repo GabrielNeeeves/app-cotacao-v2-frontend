@@ -28,7 +28,7 @@ const RoleAuth = {
         checkPageAccess(requiredRole) {
             if (!this.hasRole(requiredRole)) {
                 alert('Você não tem permissão para acessar esta página.');
-                window.location.href = 'index.html';
+                window.location.href = '../index/index.html';
                 return false;
             }
             return true;
@@ -77,13 +77,13 @@ const RoleAuth = {
     window.addEventListener('load', function() {
         const bearerToken = localStorage.getItem('bearerToken');
         if (!bearerToken) {
-            window.location.href = 'login.html';
+            window.location.href = '../index/index.html';
             return;
         }
         
         if (!RoleAuth.hasRole(RoleAuth.ROLES.FUNCIONARIO)) {
             alert('Você não tem permissão para acessar esta página. É necessário ter a role FUNCIONARIO.');
-            window.location.href = 'index.html';
+            window.location.href = '../index/index.html';
             return;
         }
 
@@ -91,7 +91,7 @@ const RoleAuth = {
         const empresaId = localStorage.getItem('empresaId');
         if (!empresaId) {
             alert('EmpresaId não encontrado. Você precisa estar associado a uma empresa para cadastrar ofertas.');
-            window.location.href = 'index.html';
+            window.location.href = '../index/index.html';
             return;
         }
 
@@ -152,7 +152,7 @@ const RoleAuth = {
             const bearerToken = localStorage.getItem('bearerToken');
             if (!bearerToken) {
                 showMessage('Token de autenticação não encontrado. Faça login novamente.', 'error');
-                window.location.href = 'login.html';
+                window.location.href = '../login/login.html';
                 return;
             }
 
@@ -220,7 +220,7 @@ const RoleAuth = {
 
     function cancelForm() {
         if (confirm('Tem certeza que deseja cancelar? Os dados não salvos serão perdidos.')) {
-            window.location.href = 'index.html';
+            window.location.href = '../index/index.html';
         }
     }
 
@@ -228,6 +228,6 @@ const RoleAuth = {
         if (confirm('Tem certeza que deseja sair?')) {
             localStorage.removeItem('bearerToken');
             localStorage.removeItem('userRole');
-            window.location.href = 'login.html';
+            window.location.href = '../login/login.html';
         }
     }

@@ -196,7 +196,7 @@ const RoleAuth = {
             card.innerHTML = `
                 <div class="mb-4">
                     <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-xl font-semibold text-white">Lista de Ofertas - ${localStorage.getItem('empresa')}</h3>
+                        <h3 class="text-xl font-semibold text-white">Lista de Ofertas - ${offerList.id}</h3>
                         <div class="flex items-center space-x-2">
                             <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium">
                                 ${offerList.ofertas.length} ${offerList.ofertas.length === 1 ? 'item' : 'itens'}
