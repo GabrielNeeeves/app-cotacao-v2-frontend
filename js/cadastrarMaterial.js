@@ -57,11 +57,12 @@ const RoleAuth = {
         const materialData = {
             nome: formData.get('nome').trim(),
             descricao: formData.get('descricao').trim(),
-            categoria: formData.get('categoria')
+            categoria: formData.get('categoria'),
+            fabricante: formData.get('fabricante').trim(),
         };
 
         // Validate required fields
-        if (!materialData.nome || !materialData.descricao || !materialData.categoria) {
+        if (!materialData.nome || !materialData.descricao || !materialData.categoria || !materialData.fabricante) {
             showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
             return;
         }

@@ -172,9 +172,17 @@ class OffersManager {
                 <!-- Material Description -->
                 <div class="flex items-start text-gray-300">
                     <svg class="w-4 h-4 mr-2 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m4-4h6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     <span class="leading-relaxed">${offer.material.descricao || 'Sem descrição'}</span>
+                </div>
+
+                <!-- Material Producer -->
+                <div class="flex items-start text-gray-300">
+                    <svg class="w-4 h-4 mr-2 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                    </svg>
+                    <span class="leading-relaxed">${offer.material.fabricante || 'Fabricante não informado'}</span>
                 </div>
                 
                 <!-- Company/School Info -->
@@ -187,9 +195,6 @@ class OffersManager {
                 
                 <!-- Price -->
                 <div class="flex items-center text-green-400 font-semibold">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
-                    </svg>
                     <span>R$ ${offer.preco.toFixed(2)}</span>
                 </div>
                 
@@ -229,10 +234,7 @@ class OffersManager {
             </div>
             
             <div class="flex space-x-3">
-                <button class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
-                    Ver Detalhes
-                </button>
-                <button class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors" onclick="offersManager.openUpdateModal(${offer.id}, '${offer.material.nome}', ${offer.preco}, ${offer.prazoEntrega}, ${offer.quantidadeMinima}, '${(offer.observacoes || '').replace(/'/g, "\\'")}')">
+                <button class="bg-purple-700 hover:bg-purple-800 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors" onclick="offersManager.openUpdateModal(${offer.id}, '${offer.material.nome}', ${offer.preco}, ${offer.prazoEntrega}, ${offer.quantidadeMinima}, '${(offer.observacoes || '').replace(/'/g, "\\'")}')">
                     Editar
                 </button>
                 <!-- Added payment button -->
