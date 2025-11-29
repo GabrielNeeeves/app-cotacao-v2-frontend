@@ -62,7 +62,7 @@ const RoleAuth = {
         };
 
         // Validate required fields
-        if (!materialData.nome || !materialData.descricao || !materialData.categoria || !materialData.fabricante) {
+        if (!materialData.nome  || !materialData.categoria || !materialData.fabricante) {
             showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
             return;
         }

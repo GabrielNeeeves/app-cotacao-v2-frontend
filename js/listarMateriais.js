@@ -28,7 +28,7 @@ const RoleAuth = {
             checkPageAccess(requiredRole) {
                 if (!this.hasRole(requiredRole)) {
                     alert('Você não tem permissão para acessar esta página.');
-                    window.location.href = 'index.html';
+                    window.location.href = '../index/index.html';
                     return false;
                 }
                 return true;

@@ -7,6 +7,7 @@ class OffersManager {
     init() {
         this.attachEventListeners();
         this.loadOffers();
+        this.createUpdateModal();
     }
 
     attachEventListeners() {
@@ -234,7 +235,17 @@ class OffersManager {
             </div>
             
             <div class="flex space-x-3">
-                <button class="bg-purple-700 hover:bg-purple-800 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors" onclick="offersManager.openUpdateModal(${offer.id}, '${offer.material.nome}', ${offer.preco}, ${offer.prazoEntrega}, ${offer.quantidadeMinima}, '${(offer.observacoes || '').replace(/'/g, "\\'")}')">
+                <button class="bg-purple-700 hover:bg-purple-800 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors"
+                onclick="offersManager.openUpdateModal(
+                    ${offer.id}, 
+                    ${offer.funcionario.id}, 
+                    ${offer.material.id}, 
+                    '${offer.material.nome}', 
+                    ${offer.preco}, 
+                    ${offer.prazoEntrega}, 
+                    ${offer.quantidadeMinima}, 
+                    '${(offer.observacoes || '').replace(/'/g, "\\'")}'
+                )">
                     Editar
                 </button>
                 <!-- Added payment button -->
@@ -303,20 +314,23 @@ class OffersManager {
         }
     }
 
-    openUpdateModal(offerId, materialNome, preco, prazoEntrega, quantidadeMinima, observacoes) {
-        if (!document.getElementById('updateModal')) {
-            this.createUpdateModal();
-        }
+    openUpdateModal(offerId, funcionarioId, materialId, materialNome, preco, prazoEntrega, quantidadeMinima, observacoes) {
 
-        document.getElementById('updateOfferId').value = offerId;
-        document.getElementById('updatePreco').value = preco;
-        document.getElementById('updatePrazoEntrega').value = prazoEntrega;
-        document.getElementById('updateQuantidadeMinima').value = quantidadeMinima;
-        document.getElementById('updateObservacoes').value = observacoes;
-        document.getElementById('modalMaterialName').textContent = materialNome;
+    this.currentOffer = {
+        funcionarioId,
+        materialId
+    };
 
-        document.getElementById('updateModal').classList.remove('hidden');
-    }
+    document.getElementById('updateOfferId').value = offerId;
+    document.getElementById('updatePreco').value = preco;
+    document.getElementById('updatePrazoEntrega').value = prazoEntrega;
+    document.getElementById('updateQuantidadeMinima').value = quantidadeMinima;
+    document.getElementById('updateObservacoes').value = observacoes || '';
+    document.getElementById('modalMaterialName').textContent = materialNome;
+
+    // ABRIR O MODAL
+    document.getElementById('updateModal').classList.remove('hidden');
+}
 
     createUpdateModal() {
         const modal = document.createElement('div');
@@ -382,45 +396,48 @@ class OffersManager {
     }
 
     async updateOffer() {
-        try {
-            const offerId = document.getElementById('updateOfferId').value;
-            const preco = parseFloat(document.getElementById('updatePreco').value);
-            const prazoEntrega = parseInt(document.getElementById('updatePrazoEntrega').value);
-            const quantidadeMinima = parseInt(document.getElementById('updateQuantidadeMinima').value);
-            const observacoes = document.getElementById('updateObservacoes').value;
+    try {
+        const offerId = document.getElementById('updateOfferId').value;
 
-            const bearerToken = localStorage.getItem('bearerToken');
-            if (!bearerToken) {
-                throw new Error('Token de autenticação não encontrado');
-            }
+        const preco = parseFloat(document.getElementById('updatePreco').value);
+        const prazoEntrega = parseInt(document.getElementById('updatePrazoEntrega').value);
+        const quantidadeMinima = parseInt(document.getElementById('updateQuantidadeMinima').value);
+        const observacoes = document.getElementById('updateObservacoes').value;
 
-            const response = await fetch(`${this.apiBaseUrl}/ofertas/${offerId}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${bearerToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    preco,
-                    prazoEntrega,
-                    quantidadeMinima,
-                    observacoes
-                })
-            });
+        const bodyPayload = {
+            funcionarioId: this.currentOffer.funcionarioId,
+            materialId: this.currentOffer.materialId,
+            preco,
+            prazoEntrega,
+            quantidadeMinima,
+            observacoes
+        };
 
-            if (!response.ok) {
-                throw new Error(`Erro ao atualizar oferta: ${response.status}`);
-            }
+        console.log("Payload enviado:", bodyPayload);
 
-            this.closeUpdateModal();
-            this.loadOffers();
-            
-        } catch (error) {
-            console.error('[v0] Error updating offer:', error);
-            alert(`Erro ao atualizar oferta: ${error.message}`);
+        const bearerToken = localStorage.getItem('bearerToken');
+
+        const response = await fetch(`${this.apiBaseUrl}/ofertas/${offerId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${bearerToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bodyPayload)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ao atualizar oferta: ${response.status}`);
         }
-    }
 
+        this.closeUpdateModal();
+        this.loadOffers();
+
+    } catch (error) {
+        console.error('[v0] Error updating offer:', error);
+        alert(`Erro ao atualizar oferta: ${error.message}`);
+    }
+}
     async createPaymentPreference(offerId, materialNome, preco) {
                 try {
                     const bearerToken = localStorage.getItem('bearerToken');

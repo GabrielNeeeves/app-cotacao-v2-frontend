@@ -28,7 +28,7 @@ const RoleAuth = {
             checkPageAccess(requiredRole) {
                 if (!this.hasRole(requiredRole)) {
                     alert('Você não tem permissão para acessar esta página.');
-                    window.location.href = 'index.html';
+                    window.location.href = '../index/index.html';
                     return false;
                 }
                 return true;
@@ -173,13 +173,13 @@ const RoleAuth = {
                 let companyType = 'Empresa';
                 let companyBadgeColor = 'bg-blue-600';
                 
-                if (offerList.funcionarioId) {
-                    if (offerList.funcionarioId.empresa) {
-                        companyName = offerList.funcionarioId.empresa.nome;
+                if (offerList.funcionario) {
+                    if (offerList.funcionario.empresa) {
+                        companyName = offerList.funcionario.empresa.nome;
                         companyType = 'Empresa';
                         companyBadgeColor = 'bg-blue-600';
-                    } else if (offerList.funcionarioId.escola) {
-                        companyName = offerList.funcionarioId.escola.nome;
+                    } else if (offerList.funcionario.escola) {
+                        companyName = offerList.funcionario.escola.nome;
                         companyType = 'Escola';
                         companyBadgeColor = 'bg-green-600';
                     }
@@ -281,6 +281,15 @@ const RoleAuth = {
                                             <span class="text-green-400 font-semibold">R$ ${offer.preco.toFixed(2)}</span>
                                         </div>
                                         <div class="flex items-center text-gray-300 text-xs space-x-4">
+
+                                            <span class="flex items-center">
+                                                ${offer.observacoes ? `
+                                                <p class="text-xs text-gray-400 mt-1">
+                                                    <span class="font-medium">Observações:</span> ${offer.observacoes}
+                                                </p>
+                                            ` : ''}
+                                            </span>
+
                                             <span class="flex items-center">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -424,7 +433,7 @@ const RoleAuth = {
 
                     const totalPrice = offerList.ofertas.reduce((sum, offer) => sum + offer.preco, 0);
 
-                    const response = await fetch(`${this.apiBaseUrl}/pagamentos/criar-preferencia`, {
+                    const response = await fetch(`${this.apiBaseUrl}/pagamentos/criar_preferencia`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${bearerToken}`,
@@ -520,7 +529,7 @@ const RoleAuth = {
                                 </div>
                                 ${offer.observacoes ? `
                                     <p class="text-xs text-gray-400 mt-1">
-                                        <span class="font-medium">Obs:</span> ${offer.observacoes}
+                                        <span class="font-medium">Observações:</span> ${offer.observacoes}
                                     </p>
                                 ` : ''}
                             </div>

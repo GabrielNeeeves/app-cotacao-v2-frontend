@@ -89,7 +89,7 @@ const RoleAuth = {
 
         // Check if empresaId exists in localStorage
         const empresaId = localStorage.getItem('empresaId');
-        if (userRole === "ROLE_FUNCIONARIO" && !empresaId) {
+        if (this.userRole === "ROLE_FUNCIONARIO" && !empresaId) {
             alert('EmpresaId não encontrado. Você precisa estar associado a uma empresa para cadastrar ofertas.');
             window.location.href = '../index/index.html';
             return;

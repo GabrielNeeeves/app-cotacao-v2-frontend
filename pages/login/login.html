@@ -23,6 +23,19 @@
     </script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
+
+    <video 
+        autoplay 
+        loop 
+        muted 
+        playsinline
+        class="fixed top-0 left-0 w-full h-full object-cover z-[-2]"
+    >
+        <source src="../../img/gifCriancasMaterial.mp4" type="video/mp4">
+    </video>
+
+    <!-- Escurecer vídeo para destacar o conteúdo -->
+    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 z-[-1]"></div>
     <!-- Navigation Header -->
     <nav class="bg-gray-800 border-b border-gray-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,14 +45,6 @@
                         <span class="text-xl font-bold text-purple-400">School Compare</span>
                     </div>
                 </div>
-                <!-- <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Main Page</a>
-                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Item Details</a>
-                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Price Comparison</a>
-                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About Us</a>
-                    </div>
-                </div> -->
             </div>
         </div>
     </nav>
@@ -49,7 +54,7 @@
         <div class="max-w-md w-full space-y-8">
             <div>
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
-                    Entrar com sua conta
+                    Entrar com a sua conta
                 </h2>
                 <p class="mt-2 text-center text-sm text-gray-400">
                     Fazer login
@@ -198,7 +203,7 @@
         document.getElementById('createAccountButton').addEventListener('click', function() {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('registerForm').classList.remove('hidden');
-            document.querySelector('h2').textContent = 'Criar Nova Conta';
+            document.querySelector('h2').textContent = 'Criar uma nova conta';
             document.querySelector('p').textContent = 'Registrar-se como cliente';
         });
 

@@ -28,7 +28,7 @@ const RoleAuth = {
             checkPageAccess(requiredRole) {
                 if (!this.hasRole(requiredRole)) {
                     alert('Você não tem permissão para acessar esta página.');
-                    window.location.href = 'index.html';
+                    window.location.href = '../index/index.html';
                     return false;
                 }
                 return true;
@@ -280,7 +280,7 @@ const RoleAuth = {
                     }
 
                     alert('Lista de ofertas criada com sucesso!');
-                    window.location.href = 'listar-oferta-lista.html';
+                    window.location.href = '../listarOfertaLista/listarOfertaLista.html';
 
                 } catch (error) {
                     console.error('Error creating offer list:', error);

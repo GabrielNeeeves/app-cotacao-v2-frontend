@@ -199,46 +199,71 @@ class StudentsManager {
         }
 
         async updateStudent() {
-            try {
-                const studentId = document.getElementById('updateAlunoId').value;
-                const nome = document.getElementById('updateNome').value;
-                const serie = document.getElementById('updateSerie').value;
-                const turno = document.getElementById('updateTurno').value;
-                const anoLetivo = parseInt(document.getElementById('updateAnoLetivo').value);
-                const observacoes = document.getElementById('updateObservacoes').value;
+    try {
+        const studentId = document.getElementById('updateAlunoId').value;
 
-                const bearerToken = localStorage.getItem('bearerToken');
-                if (!bearerToken) {
-                    throw new Error('Token de autenticação não encontrado');
-                }
-
-                const response = await fetch(`${this.apiBaseUrl}/alunos/${studentId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${bearerToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        nome,
-                        serie,
-                        turno,
-                        anoLetivo,
-                        observacoes
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erro ao atualizar aluno: ${response.status}`);
-                }
-
-                this.closeUpdateModal();
-                this.loadStudents();
-                
-            } catch (error) {
-                console.error('Error updating student:', error);
-                alert(`Erro ao atualizar aluno: ${error.message}`);
-            }
+        const bearerToken = localStorage.getItem('bearerToken');
+        if (!bearerToken) {
+            throw new Error('Token de autenticação não encontrado');
         }
+
+        // 1. Buscar o aluno completo
+        const getResponse = await fetch(`${this.apiBaseUrl}/alunos/${studentId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${bearerToken}`
+            }
+        });
+
+        if (!getResponse.ok) {
+            throw new Error('Erro ao buscar aluno.');
+        }
+
+        const aluno = await getResponse.json();
+        const data = aluno; // sua API devolve array
+
+        // 2. Pegar dados atualizados do formulário
+        const clienteId = localStorage.getItem('clienteId');
+        const nome = document.getElementById('updateNome').value;
+        const serie = document.getElementById('updateSerie').value;
+        const turno = document.getElementById('updateTurno').value;
+        const anoLetivo = parseInt(document.getElementById('updateAnoLetivo').value);
+        const observacoes = document.getElementById('updateObservacoes').value;
+
+        // 3. Montar o corpo correto
+        const requestBody = {
+            id: data.id,
+            clienteId: clienteId,
+            escolaId: data.escola.id,
+            nome: nome,
+            serie: serie,
+            turno: turno,
+            anoLetivo: anoLetivo,
+            observacoes: observacoes
+        };
+
+        // 4. Enviar update
+        const response = await fetch(`${this.apiBaseUrl}/alunos/${studentId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${bearerToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ao atualizar aluno: ${response.status}`);
+        }
+
+        this.closeUpdateModal();
+        this.loadStudents();
+
+    } catch (error) {
+        console.error('Error updating student:', error);
+        alert(`Erro ao atualizar aluno: ${error.message}`);
+    }
+}
 
         showLoadingState() {
             this.hideAllStates();
