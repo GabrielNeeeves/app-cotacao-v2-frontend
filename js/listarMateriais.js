@@ -1,12 +1,61 @@
-class MaterialsManager {
+const RoleAuth = {
+            ROLES: {
+                CLIENTE: 'ROLE_CLIENTE',
+                FUNCIONARIO: 'ROLE_FUNCIONARIO',
+                ADMINISTRADOR: 'ROLE_ADMINISTRADOR'
+            },
+            
+            ROLE_HIERARCHY: {
+                'ROLE_CLIENTE': 1,
+                'ROLE_FUNCIONARIO': 2,
+                'ROLE_ADMINISTRADOR': 3
+            },
+
+            getUserRole() {
+                return localStorage.getItem('userRole');
+            },
+
+            hasRole(requiredRole) {
+                const userRole = this.getUserRole();
+                if (!userRole) return false;
+                
+                const userLevel = this.ROLE_HIERARCHY[userRole] || 0;
+                const requiredLevel = this.ROLE_HIERARCHY[requiredRole] || 0;
+                
+                return userLevel >= requiredLevel;
+            },
+
+            checkPageAccess(requiredRole) {
+                if (!this.hasRole(requiredRole)) {
+                    alert('Você não tem permissão para acessar esta página.');
+                    window.location.href = 'index.html';
+                    return false;
+                }
+                return true;
+            },
+
+            hideElementsForRole(selector, requiredRole) {
+                if (!this.hasRole(requiredRole)) {
+                    document.querySelectorAll(selector).forEach(el => {
+                        el.style.display = 'none';
+                    });
+                }
+            }
+        };
+
+        class MaterialsManager {
             constructor() {
                 this.apiBaseUrl = 'http://localhost:8080';
                 this.init();
             }
 
             init() {
+                RoleAuth.checkPageAccess(RoleAuth.ROLES.CLIENTE);
+                
                 this.attachEventListeners();
                 this.loadMaterials();
+                
+                this.applyRoleBasedUI();
             }
 
             attachEventListeners() {
@@ -86,15 +135,24 @@ class MaterialsManager {
                 const card = document.createElement('div');
                 card.className = 'bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors relative';
 
-                card.innerHTML = `
-                    <!-- Added delete button in top-right corner -->
+                const deleteButton = RoleAuth.hasRole(RoleAuth.ROLES.FUNCIONARIO) ? `
                     <button class="absolute top-4 right-4 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition-colors" onclick="materialsManager.deleteMaterial(${material.id})">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                         </svg>
                     </button>
+                ` : '';
+
+                const editButton = RoleAuth.hasRole(RoleAuth.ROLES.FUNCIONARIO) ? `
+                    <button class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors" onclick="materialsManager.openUpdateModal(${material.id}, '${material.nome.replace(/'/g, "\\'")}', '${(material.descricao || '').replace(/'/g, "\\'")}', '${material.categoria}')">
+                        Editar
+                    </button>
+                ` : '';
+
+                card.innerHTML = `
+                    ${deleteButton}
                     
-                    <div class="mb-4 pr-12">
+                    <div class="mb-4 ${deleteButton ? 'pr-12' : ''}">
                         <h3 class="text-xl font-semibold text-white mb-2">${material.nome}</h3>
                         <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium">
                             ${material.categoria}
@@ -108,14 +166,6 @@ class MaterialsManager {
                             </svg>
                             <span class="leading-relaxed">${material.descricao || 'Sem descrição'}</span>
                         </div>
-
-                        <div class="flex items-start text-gray-300">
-                            <svg class="w-4 h-4 mr-2 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                            </svg>
-
-                            <span class="leading-relaxed">${material.fabricante || 'Fabricante não informado'}</span>
-                        </div>
                         
                         <div class="flex items-center text-gray-300">
                             <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,11 +176,19 @@ class MaterialsManager {
                     </div>
                     
                     <div class="flex space-x-3">
-                        <!-- Added update button -->
-                        <button class="flex-1 bg-purple-700 hover:bg-purple-800 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors" onclick="materialsManager.openUpdateModal(${material.id}, '${material.nome.replace(/'/g, "\\'")}', '${(material.descricao || '').replace(/'/g, "\\'")}', '${material.categoria}', '${(material.fabricante || "").replace(/'/g, "\\'")}')">
-                            Editar
+                        <button class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
+                            Ver Detalhes
                         </button>
+                        ${editButton}
                     </div>
+                    
+                    <!-- Added inventory button for all users -->
+                    <button class="w-full mt-3 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center space-x-2" onclick="materialsManager.addToInventory('${material.nome.replace(/'/g, "\\'")}')">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        <span>Adicionar ao Inventário</span>
+                    </button>
                 `;
 
                 return card;
@@ -193,7 +251,7 @@ class MaterialsManager {
                 }
             }
 
-            openUpdateModal(materialId, nome, descricao, categoria, fabricante) {
+            openUpdateModal(materialId, nome, descricao, categoria) {
                 // Create modal if it doesn't exist
                 if (!document.getElementById('updateModal')) {
                     this.createUpdateModal();
@@ -204,7 +262,6 @@ class MaterialsManager {
                 document.getElementById('updateNome').value = nome;
                 document.getElementById('updateDescricao').value = descricao;
                 document.getElementById('updateCategoria').value = categoria;
-                document.getElementById('updateFabricante').value = fabricante;
 
                 // Show modal
                 document.getElementById('updateModal').classList.remove('hidden');
@@ -232,12 +289,6 @@ class MaterialsManager {
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
                                 <textarea id="updateDescricao" rows="3"
                                     class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Fabricante</label>
-                                <input type="text" id="updateFabricante" required
-                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                             </div>
                             
                             <div>
@@ -289,7 +340,6 @@ class MaterialsManager {
                     const nome = document.getElementById('updateNome').value;
                     const descricao = document.getElementById('updateDescricao').value;
                     const categoria = document.getElementById('updateCategoria').value;
-                    const fabricante = document.getElementById('updateFabricante').value;
 
                     const bearerToken = localStorage.getItem('bearerToken');
                     if (!bearerToken) {
@@ -305,8 +355,7 @@ class MaterialsManager {
                         body: JSON.stringify({
                             nome,
                             descricao,
-                            categoria,
-                            fabricante
+                            categoria
                         })
                     });
 
@@ -318,8 +367,63 @@ class MaterialsManager {
                     this.loadMaterials();
                     
                 } catch (error) {
-                    console.error('[v0] Error updating material:', error);
+                    console.error('Error updating material:', error);
                     alert(`Erro ao atualizar material: ${error.message}`);
+                }
+            }
+
+            async addToInventory(materialName) {
+                const quantity = prompt(`Quantos "${materialName}" você deseja adicionar ao inventário?`, '1');
+                
+                if (quantity === null) {
+                    return; // User cancelled
+                }
+
+                const quantityInt = parseInt(quantity);
+                if (isNaN(quantityInt) || quantityInt <= 0) {
+                    alert('Por favor, insira uma quantidade válida.');
+                    return;
+                }
+
+                try {
+                    const bearerToken = localStorage.getItem('bearerToken');
+                    if (!bearerToken) {
+                        alert('Você precisa estar logado para adicionar itens ao inventário.');
+                        return;
+                    }
+
+                    const response = await fetch(`${this.apiBaseUrl}/inventario`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${bearerToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            item_nome: materialName,
+                            quantidade: quantityInt
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Erro ao adicionar ao inventário (${response.status}): ${errorText}`);
+                    }
+
+                    alert(`✓ ${quantityInt} unidade(s) de "${materialName}" adicionado(s) ao seu inventário!`);
+                    
+                } catch (error) {
+                    console.error('Error adding to inventory:', error);
+                    alert(`Erro ao adicionar ao inventário: ${error.message}`);
+                }
+            }
+
+            applyRoleBasedUI() {
+                // Hide "Cadastrar Material" link if not FUNCIONARIO
+                if (!RoleAuth.hasRole(RoleAuth.ROLES.FUNCIONARIO)) {
+                    const cadastrarLink = document.querySelector('a[href="cadastrar-material.html"]');
+                    if (cadastrarLink) {
+                        cadastrarLink.style.display = 'none';
+                    }
                 }
             }
         }

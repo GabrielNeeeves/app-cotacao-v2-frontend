@@ -48,13 +48,13 @@ const RoleAuth = {
                 
                 if (!RoleAuth.hasRole(RoleAuth.ROLES.FUNCIONARIO)) {
                     alert('Você precisa ter permissão de FUNCIONARIO para acessar esta página.');
-                    window.location.href = 'index.html';
+                    window.location.href = '../index/index.html';
                     return;
                 }
                 
                 if (userRole === RoleAuth.ROLES.FUNCIONARIO && !empresaId) {
                     alert('Você precisa estar vinculado a uma empresa para acessar esta página.');
-                    window.location.href = 'index.html';
+                    window.location.href = '../index/index.html';
                     return;
                 }
                 
@@ -256,6 +256,7 @@ const RoleAuth = {
                     }
 
                     const funcionarioId = localStorage.getItem('funcionarioId');
+                    const userId = localStorage.getItem('userId');
                     if (!funcionarioId) {
                         throw new Error('ID do funcionário não encontrado. Faça login novamente.');
                     }

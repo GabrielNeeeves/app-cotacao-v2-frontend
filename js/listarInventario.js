@@ -111,9 +111,7 @@ class InventoryManager {
                 
                 <!-- Added edit button -->
                 <div class="flex space-x-3">
-                    <button class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors" onclick="inventoryManager.openUpdateModal(${item.inventario_id}, '${item.item_nome.replace(/'/g, "\\'")}', ${item.quantidade})">
-                        Editar
-                    </button>
+                    
                 </div>
             `;
 

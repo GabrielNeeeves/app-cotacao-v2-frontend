@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Material List - SchoolSuppliesCompare</title>
+    <title>Criar lista de material - School Compare</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
     <!-- Navigation Header -->
@@ -13,7 +14,7 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold text-purple-400">App cotação</h1>
+                        <h1 class="text-xl font-bold text-purple-400">School Compare</h1>
                     </div>
                 </div>
                 <div class="flex space-x-4">
@@ -38,16 +39,6 @@
             <form id="createListForm" class="space-y-6">
                 <!-- Basic Information -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- <div>
-                        <label for="funcionarioId" class="block text-sm font-medium text-gray-300 mb-2">ID do funcionário</label>
-                        <input type="number" id="funcionarioId" name="funcionarioId" required
-                               class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                    </div>
-                    <div>
-                        <label for="escolaId" class="block text-sm font-medium text-gray-300 mb-2">ID da escola</label>
-                        <input type="number" id="escolaId" name="escolaId" required
-                               class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                    </div> -->
                     <div>
                         <label for="anoLetivo" class="block text-sm font-medium text-gray-300 mb-2">Ano Letivo</label>
                         <input type="number" id="anoLetivo" name="anoLetivo" required min="2020" max="2030"
@@ -87,6 +78,24 @@
                     </button>
                 </div>
             </form>
+
+                <div class="mb-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
+                    <div class="flex items-center gap-4">
+                        <input type="file" id="importFile" accept=".csv, .xls, .xlsx" class="hidden" />
+                        
+                        <label for="importFile" class="cursor-pointer bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md inline-flex items-center transition-colors shadow-sm">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            Importar planilha
+                        </label>
+
+                        <span class="text-sm text-gray-400">
+                            (.xlsx, .xls ou .csv)
+                        </span>
+                    </div>
+                </div>
+            </div>
 
             <!-- Loading State -->
             <div id="loadingState" class="hidden text-center py-8">

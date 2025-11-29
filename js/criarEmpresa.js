@@ -42,6 +42,7 @@ const RoleAuth = {
             this.apiBaseUrl = 'http://localhost:8080';
             this.initializeEventListeners();
             this.setupCNPJMask();
+            this.setupPhoneMask();
         }
 
         initializeEventListeners() {
@@ -61,6 +62,15 @@ const RoleAuth = {
             });
         }
 
+        setupPhoneMask() {
+            const phoneInput = document.getElementById('telefone');
+            phoneInput.addEventListener('input', (e) => {
+                e.target.value = this.formatPhone(e.target.value);
+            });
+        }
+
+        
+
         async handleSubmit(e) {
             e.preventDefault();
             
@@ -68,7 +78,8 @@ const RoleAuth = {
             const empresaData = {
                 nome: formData.get('nome').trim(),
                 endereco: formData.get('endereco').trim(),
-                cnpj: formData.get('cnpj').replace(/\D/g, '') // Remove formatting for API
+                cnpj: formData.get('cnpj').replace(/\D/g, ''),
+                telefone: formData.get('telefone').trim(),
             };
 
             // Validate CNPJ length
@@ -85,6 +96,14 @@ const RoleAuth = {
 
         formatCNPJ(cnpj) {
             return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+        }
+
+        formatPhone(value) {
+            return value
+                .replace(/\D/g, '')
+                .replace(/^(\d{2})(\d)/, '($1) $2')
+                .replace(/(\d{5})(\d)/, '$1-$2')
+                .substring(0, 15);
         }
 
         async createEmpresa(empresaData) {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listar Listas de Ofertas - App cotação</title>
+    <title>Listar Listas de Ofertas - School Compare</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -16,7 +16,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <h1 class="text-xl font-semibold text-purple-400">SchoolCompare</h1>
+                    <h1 class="text-xl font-semibold text-purple-400">School Compare</h1>
                 </div>
                 <div class="flex items-center space-x-4">
                     <a href="../index/index.html" class="text-gray-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">
@@ -60,6 +60,32 @@
             </div>
             <h3 class="text-lg font-medium text-gray-400 mb-2">Nenhuma lista de ofertas encontrada</h3>
             <p class="text-gray-500">Não há listas de ofertas cadastradas no sistema.</p>
+        </div>
+
+        <!-- Modal for Offer List Details -->
+        <div id="detailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div class="bg-gray-800 rounded-lg p-6 max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 id="modalTitle" class="text-2xl font-bold text-white">Detalhes da Lista de Ofertas</h2>
+                    <button onclick="document.getElementById('detailsModal').classList.add('hidden')" 
+                            class="text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="modalTotal" class="flex items-center text-green-400 font-semibold text-lg mb-4">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                    </svg>
+                    <span>Total:</span>
+                </div>
+
+                <div id="modalMaterialsList" class="space-y-3">
+                    <!-- Offer list items will be inserted here -->
+                </div>
+            </div>
         </div>
     </div>
 

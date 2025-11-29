@@ -29,17 +29,17 @@
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
-                        <span class="text-white text-lg font-semibold">🏠 SchoolSuppliesCompare</span>
+                        <span class="text-xl font-bold text-purple-400">School Compare</span>
                     </div>
                 </div>
-                <div class="hidden md:block">
+                <!-- <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Main Page</a>
                         <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Item Details</a>
                         <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Price Comparison</a>
                         <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About Us</a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </nav>
@@ -218,7 +218,7 @@
                 nome: formData.get('nome'),
                 email: formData.get('email'),
                 senha: formData.get('senha'),
-                alunoId: null
+                alunoId: 0
             };
 
             const submitButton = document.getElementById('registerSubmitButton');

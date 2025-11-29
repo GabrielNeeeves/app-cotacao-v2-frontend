@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar empresa - App Cotação</title>
+    <title>Cadastrar empresa - School Compare</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -15,7 +15,7 @@
     <nav class="bg-gray-800 p-4">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <span class="text-purple-400 text-xl font-bold">App cotação</span>
+                <span class="text-purple-400 text-xl font-bold">School Compare</span>
             </div>
             <div class="flex space-x-6">
                 <a href="../index/index.html" class="text-gray-300 hover:text-purple-400 transition-colors">Página principal</a>
@@ -68,6 +68,19 @@
                         required
                     >
                 </div>
+
+                <!-- TELEFONE -->
+                <div>
+                        <label for="telefone" class="block text-sm font-medium text-gray-300 mb-2">Telefone</label>
+                        <input 
+                            type="tel" 
+                            id="telefone" 
+                            name="telefone" 
+                            placeholder="(17) 3444-4332"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            required
+                        >
+                    </div>
 
                 <!-- Buttons -->
                 <div class="flex justify-end space-x-4 pt-6">
