@@ -143,7 +143,7 @@ const RoleAuth = {
 
     function cancelForm() {
         if (confirm('Tem certeza que deseja cancelar? Os dados não salvos serão perdidos.')) {
-            window.location.href = '../pages/index/index.html';
+            window.location.href = '../index/index.html';
         }
     }
 

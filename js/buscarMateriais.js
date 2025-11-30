@@ -430,7 +430,7 @@ class SchoolSuppliesSearch {
     this.loadingState.classList.toggle("hidden", !show)
     this.searchBtn.disabled = show
     this.showAllBtn.disabled = show
-    this.searchBtn.textContent = show ? "Searching..." : "Search"
+    this.searchBtn.textContent = show ? "Buscando..." : "Buscar"
   }
 
   showError(message) {

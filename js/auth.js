@@ -161,7 +161,7 @@ class AuthService {
         }
       } else {
         const text = await response.text()
-        data = { message: text || "Unknown error occurred" }
+        data = { message: text || "Senha ou email incorretos" }
       }
 
       if (response.ok) {
